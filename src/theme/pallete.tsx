@@ -13,40 +13,33 @@ type CustomTheme = typeof DefaultLightTheme & {
   mode: 'exact' | 'adaptive';
 };
 
-// Common and primary color definitions (same as before)
-const PRIMARY = {
-  lighter: '#C8FACD',
-  light: '#5BE584',
-  main: '#0162C4',
-  dark: '#007B55',
-  darker: '#005249',
-};
+// Giữ lại bảng màu PEACH đã thiết kế
 const PEACH = {
-  lighter: "#ffa690",
-  light: "#ffa690",
-  main: "#ffa690",
-  dark: "#ff9378",
-  darker: "#ff7957",
+  lighter: '#FFE6E1',  // Lightest peach shade for backgrounds
+  light: '#FFC1B6',    // Lighter peach for light theme surfaces
+  main: '#FF8A75',     // Main peach color for primary elements
+  dark: '#FF6450',     // Darker peach for dark theme buttons
+  darker: '#CC4E3D',   // Darkest peach for high contrast
 };
 const GREY = {
   0: '#FFFFFF',
   900: '#161C24',
 };
 
-// Define light, dark, and peach themes
+// Define light and dark themes
 const palette = {
   light: {
     ...DefaultLightTheme,
     colors: {
       ...DefaultLightTheme.colors,
-      primary: PRIMARY.main,
-      background: '#F8FAFF',
+      primary: PEACH.main,
+      background: PEACH.lighter,
       text: GREY[900],
-      surface: '#e2e5e9',
+      surface: PEACH.light,
       button: {
         color: GREY[900],
-        bgcolor: PEACH.dark,
-        hvbgcolor: PEACH.darker,
+        bgcolor: PEACH.main,
+        hvbgcolor: PEACH.dark,
         hvcolor: GREY[900],
       },
     },
@@ -57,31 +50,14 @@ const palette = {
     ...DefaultDarkTheme,
     colors: {
       ...DefaultDarkTheme.colors,
-      primary: PRIMARY.main,
+      primary: PEACH.main,
       background: GREY[900],
       text: GREY[0],
-      surface: GREY[900],
+      surface: PEACH.darker,
       button: {
         color: GREY[0],
-        bgcolor: PEACH.darker,
-        hvbgcolor: PEACH.dark,
-      },
-    },
-    mode: 'exact' as const,
-  } as CustomTheme,
-
-  peach: {
-    ...DefaultLightTheme,
-    colors: {
-      ...DefaultLightTheme.colors,
-      primary: PEACH.main,
-      background: PEACH.light,
-      text: GREY[900],
-      surface: PEACH.lighter,
-      button: {
-        color: GREY[900],
-        bgcolor: PEACH.main,
-        hvbgcolor: PEACH.dark,
+        bgcolor: PEACH.dark,
+        hvbgcolor: PEACH.darker,
       },
     },
     mode: 'exact' as const,
@@ -90,5 +66,4 @@ const palette = {
 
 export const lightTheme = palette.light;
 export const darkTheme = palette.dark;
-export const peachTheme = palette.peach;
 export default palette;

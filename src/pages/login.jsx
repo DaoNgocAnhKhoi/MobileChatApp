@@ -1,61 +1,128 @@
-import * as React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
-import { TextInput, RadioButton, Button, useTheme } from 'react-native-paper';
+import * as React from "react";
+import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { TextInput, RadioButton, Button, useTheme } from "react-native-paper";
+import Container from "../components/Container";
 
 export default function Login() {
   const theme = useTheme();
   const { colors } = theme;
 
-  const [gender, setGender] = React.useState('male'); // Default selected value
+  const [gender, setGender] = React.useState("male"); // Default selected value
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
-      <Image source={require('../assets/peach.png')} style={styles.logo} />
-      
-      {/* Title with peach color */}
-        <Text style={[styles.title, { color: colors.text }]}>Get Started With PeachZy</Text>
-      
-      {/* Subtitle with peach color */}
-      <Text style={styles.subtitle}>
-        Already have an account?{' '}
-        <Text style={[styles.signInText, { color: colors.primary }]}>Sign In</Text>
-      </Text>
+    <Container>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Image source={require("../assets/peach.png")} style={styles.logo} />
 
-      {/* Form Inputs */}
-      <TextInput label="First Name" style={styles.input} mode="outlined" />
-      <TextInput label="Last Name" style={styles.input} mode="outlined" />
+        {/* Title with text color */}
+        <Text style={[styles.title, { color: colors.text }]}>
+          Get Started With PeachZy
+        </Text>
 
-      {/* Gender Selection */}
-      <View style={styles.radioGroup}>
-        <RadioButton.Group onValueChange={value => setGender(value)} value={gender}>
-          <View style={styles.radioOption}>
-            <RadioButton value="male" color={colors.primary} />
-            <Text style={[styles.radioLabel, { color: colors.primary }]}>Male</Text>
-          </View>
-          <View style={styles.radioOption}>
-            <RadioButton value="female" color={colors.primary} />
-            <Text style={[styles.radioLabel, { color: colors.primary }]}>Female</Text>
-          </View>
-        </RadioButton.Group>
-      </View>
+        {/* Subtitle */}
+        <Text style={[styles.subtitle, { color: colors.text }]}>
+          Already have an account?{" "}
+          <Text style={[styles.signInText, { color: colors.primary }]}>
+            Sign In
+          </Text>
+        </Text>
 
-      {/* Date of Birth and Email Address */}
-      <TextInput label="Day of Birth" style={styles.input} mode="outlined" keyboardType="numeric" />
-      <TextInput label="Email Address" style={styles.input} mode="outlined" keyboardType="email-address" />
-      <TextInput label="Password" style={styles.input} mode="outlined" secureTextEntry />
-      <TextInput label="Confirm Password" style={styles.input} mode="outlined" secureTextEntry />
+        {/* Form Inputs */}
+        <TextInput
+          label="First Name"
+          style={[styles.input, { backgroundColor: colors.surface }]}
+          mode="outlined"
+          outlineColor={colors.primary}
+          textColor={colors.text}
+        />
+        <TextInput
+          label="Last Name"
+          style={[styles.input, { backgroundColor: colors.surface }]}
+          mode="outlined"
+          outlineColor={colors.primary}
+          textColor={colors.text}
+        />
 
-      {/* Create Account Button */}
-      <Button mode="contained" style={styles.button} buttonColor={colors.primary} onPress={() => {}}>
-        Create Account
-      </Button>
+        {/* Gender Selection */}
+        <Text style={[styles.genderLabel, { color: colors.text }]}>Gender</Text>
+        <View style={styles.radioGroup}>
+          <RadioButton.Group
+            onValueChange={(value) => setGender(value)}
+            value={gender}
+          >
+            <View style={styles.radioOption}>
+              <RadioButton value="male" color={colors.primary} />
+              <Text style={[styles.radioLabel, { color: colors.text }]}>
+                Male
+              </Text>
+            </View>
+            <View style={styles.radioOption}>
+              <RadioButton value="female" color={colors.primary} />
+              <Text style={[styles.radioLabel, { color: colors.text }]}>
+                Female
+              </Text>
+            </View>
+          </RadioButton.Group>
+        </View>
 
-      {/* Footer Text with links in peach color */}
-      <Text style={styles.footerText}>
-        I agree to <Text style={[styles.linkText, { color: colors.primary }]}>Terms of Service</Text> and{' '}
-        <Text style={[styles.linkText, { color: colors.primary }]}>Privacy Policy</Text>
-      </Text>
-    </ScrollView>
+        {/* Additional Inputs */}
+        <TextInput
+          label="Day of Birth"
+          style={[styles.input, { backgroundColor: colors.surface }]}
+          mode="outlined"
+          outlineColor={colors.primary}
+          textColor={colors.text}
+          keyboardType="numeric"
+        />
+        <TextInput
+          label="Email Address"
+          style={[styles.input, { backgroundColor: colors.surface }]}
+          mode="outlined"
+          outlineColor={colors.primary}
+          textColor={colors.text}
+          keyboardType="email-address"
+        />
+        <TextInput
+          label="Password"
+          style={[styles.input, { backgroundColor: colors.surface }]}
+          mode="outlined"
+          outlineColor={colors.primary}
+          textColor={colors.text}
+          secureTextEntry
+        />
+        <TextInput
+          label="Confirm Password"
+          style={[styles.input, { backgroundColor: colors.surface }]}
+          mode="outlined"
+          outlineColor={colors.primary}
+          textColor={colors.text}
+          secureTextEntry
+        />
+
+        {/* Create Account Button */}
+        <Button
+          mode="contained"
+          style={styles.button}
+          buttonColor={colors.primary}
+          textColor={colors.onPrimary}
+          onPress={() => {}}
+        >
+          Create Account
+        </Button>
+
+        {/* Footer Text */}
+        <Text style={[styles.footerText, { color: colors.text }]}>
+          I agree to{" "}
+          <Text style={[styles.linkText, { color: colors.primary }]}>
+            Terms of Service
+          </Text>{" "}
+          and{" "}
+          <Text style={[styles.linkText, { color: colors.primary }]}>
+            Privacy Policy
+          </Text>
+        </Text>
+      </ScrollView>
+    </Container>
   );
 }
 
@@ -63,7 +130,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   logo: {
     width: 80,
@@ -72,42 +139,50 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   subtitle: {
     marginBottom: 20,
   },
   signInText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   input: {
-    width: '100%',
+    width: "100%",
     marginBottom: 15,
   },
+  genderLabel: {
+    alignSelf: "flex-start",
+    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: "500",
+  },
   radioGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
     marginBottom: 15,
   },
   radioOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20,
   },
   radioLabel: {
     marginLeft: 5,
   },
   button: {
-    width: '100%',
+    width: "100%",
     paddingVertical: 8,
     marginBottom: 20,
   },
   footerText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 10,
   },
   linkText: {
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
   },
 });
