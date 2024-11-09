@@ -13,11 +13,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-const Container = ({ children, style }) => {
+const Container = ({ children,style }) => {
   const theme = useTheme();
   const { colors } = theme;
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }, style]}>
+    <View style={[styles.container, { backgroundColor: colors.background },style ? style:{}]}>
       {children}
     </View>
   );

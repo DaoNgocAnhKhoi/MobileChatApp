@@ -1,28 +1,45 @@
 import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Feed from './Feed.jsx';
-import Notifications from './Notifications.jsx';
-import Profile from './Profile.jsx';
-import Account from './Account.jsx'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Feed from '../Feed.jsx';
+import Notifications from '../Notifications.jsx';
+import Profile from '../Profile.jsx';
+import Account from '../Account.jsx'
+import { useTheme } from 'react-native-paper';
+import Chat from './Chat';
+import Friends from './Friends';
 const Tab = createMaterialBottomTabNavigator();
 
 export default function HomeScreen() {
+  const theme = useTheme();
+  const { colors } = theme;
   return (
     <Tab.Navigator
       initialRouteName="Feed"
-      activeColor="#e91e63"
-      barStyle={{ backgroundColor: 'tomato' }}
+      barStyle={{backgroundColor:colors.primary}}
+      activeColor={colors.onBackground}
+      inactiveColor={colors.background}
     >
       <Tab.Screen
-        name="Feed"
-        component={Feed}
+        name="Chat"
+        component={Chat}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: 'Chat',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="home" color={color} size={26} />
+            <MaterialCommunityIcons name="chat-processing" color={color} size={26} />
           ),
         }}
+       
       />
+      <Tab.Screen
+        name="Friends"
+        component={Friends}
+        options={{
+          tabBarLabel: 'Friends',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="user-friends" color={color} size={26} />
+          ),
+        }} />
       <Tab.Screen
         name="Notifications"
         component={Notifications}
@@ -40,16 +57,6 @@ export default function HomeScreen() {
           tabBarLabel: 'Profile',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="account" color={color} size={26} />
-          ),
-        }}
-      />
-        <Tab.Screen
-        name="Account"
-        component={Account}
-        options={{
-          tabBarLabel: 'Account',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account-box" color={color} size={26} />
           ),
         }}
       />
