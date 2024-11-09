@@ -7,6 +7,7 @@ import Login from "./src/pages/login";
 import { useAppTheme } from "./src/hook/use-app-theme";
 import DraggableThemeSwitchButton from "./src/components/DraggableThemeSwitchButton";
 import { View, StyleSheet  } from "react-native";
+import HomeScreen from "./src/pages/Home/Home";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -19,7 +20,7 @@ export default function App() {
           <Stack.Navigator initialRouteName="login">
             <Stack.Screen
               name="login"
-              component={Login}
+              component={HomeScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>
