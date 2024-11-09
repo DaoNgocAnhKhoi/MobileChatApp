@@ -1,13 +1,11 @@
 import * as React from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import { TextInput, RadioButton, Button, useTheme } from "react-native-paper";
+import { TextInput, Button, useTheme } from "react-native-paper";
 import Container from "../components/Container";
 
 export default function Login() {
   const theme = useTheme();
   const { colors } = theme;
-
-  const [gender, setGender] = React.useState("male"); // Default selected value
 
   return (
     <Container>
@@ -15,65 +13,14 @@ export default function Login() {
         <Image source={require("../assets/peach.png")} style={styles.logo} />
 
         {/* Title with text color */}
-        <Text style={[styles.title, { color: colors.onSurface }]}>
-          Get Started With PeachZy
-        </Text>
+        <Text style={[styles.title, { color: colors.onSurface }]}>Welcome Back to PeachZy</Text>
 
         {/* Subtitle */}
-        <Text style={[styles.subtitle, { color: colors.onSurface }]}>
-          Already have an account?{" "}
-          <Text style={[styles.signInText, { color: colors.primary }]}>
-            Sign In
-          </Text>
+        <Text style={[styles.subtitle, { color: colors.onSurface }]}>Don't have an account?{" "}
+          <Text style={[styles.signUpText, { color: colors.primary }]}>Sign Up</Text>
         </Text>
 
         {/* Form Inputs */}
-        <TextInput
-          label="First Name"
-          style={[styles.input, { backgroundColor: colors.surface }]}
-          mode="outlined"
-          outlineColor={colors.primary}
-          textColor={colors.onSurface}
-        />
-        <TextInput
-          label="Last Name"
-          style={[styles.input, { backgroundColor: colors.surface }]}
-          mode="outlined"
-          outlineColor={colors.primary}
-          textColor={colors.onSurface}
-        />
-
-        {/* Gender Selection */}
-        <Text style={[styles.genderLabel, { color: colors.onSurface }]}>Gender</Text>
-        <View style={styles.radioGroup}>
-          <RadioButton.Group
-            onValueChange={(value) => setGender(value)}
-            value={gender}
-          >
-            <View style={styles.radioOption}>
-              <RadioButton value="male" color={colors.primary} />
-              <Text style={[styles.radioLabel, { color: colors.onSurface }]}>
-                Male
-              </Text>
-            </View>
-            <View style={styles.radioOption}>
-              <RadioButton value="female" color={colors.primary} />
-              <Text style={[styles.radioLabel, { color: colors.onSurface }]}>
-                Female
-              </Text>
-            </View>
-          </RadioButton.Group>
-        </View>
-
-        {/* Additional Inputs */}
-        <TextInput
-          label="Day of Birth"
-          style={[styles.input, { backgroundColor: colors.surface }]}
-          mode="outlined"
-          outlineColor={colors.primary}
-          textColor={colors.onSurface}
-          keyboardType="numeric"
-        />
         <TextInput
           label="Email Address"
           style={[styles.input, { backgroundColor: colors.surface }]}
@@ -90,16 +37,8 @@ export default function Login() {
           textColor={colors.onSurface}
           secureTextEntry
         />
-        <TextInput
-          label="Confirm Password"
-          style={[styles.input, { backgroundColor: colors.surface }]}
-          mode="outlined"
-          outlineColor={colors.primary}
-          textColor={colors.onSurface}
-          secureTextEntry
-        />
 
-        {/* Create Account Button */}
+        {/* Login Button */}
         <Button
           mode="contained"
           style={styles.button}
@@ -107,20 +46,11 @@ export default function Login() {
           textColor={colors.onPrimary}
           onPress={() => {}}
         >
-          Create Account
+          Login
         </Button>
 
-        {/* Footer Text */}
-        <Text style={[styles.footerText, { color: colors.onSurface }]}>
-          I agree to{" "}
-          <Text style={[styles.linkText, { color: colors.primary }]}>
-            Terms of Service
-          </Text>{" "}
-          and{" "}
-          <Text style={[styles.linkText, { color: colors.primary }]}>
-            Privacy Policy
-          </Text>
-        </Text>
+        {/* Forgot Password Link */}
+        <Text style={[styles.forgotPasswordText, { color: colors.primary }]}>Forgot your password?</Text>
       </ScrollView>
     </Container>
   );
@@ -145,33 +75,12 @@ const styles = StyleSheet.create({
   subtitle: {
     marginBottom: 20,
   },
-  signInText: {
+  signUpText: {
     fontWeight: "bold",
   },
   input: {
     width: "100%",
     marginBottom: 15,
-  },
-  genderLabel: {
-    alignSelf: "flex-start",
-    marginBottom: 5,
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  radioGroup: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 15,
-  },
-  radioOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 20,
-  },
-  radioLabel: {
-    marginLeft: 5,
   },
   button: {
     width: "100%",
@@ -179,11 +88,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
   },
-  footerText: {
+  forgotPasswordText: {
     textAlign: "center",
     marginTop: 10,
-  },
-  linkText: {
     textDecorationLine: "underline",
   },
 });
