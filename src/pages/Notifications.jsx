@@ -5,14 +5,9 @@ import { Avatar, Button } from "react-native-paper";
 export default function Notifications() {
   return (
     <View style={{ marginHorizontal: 10, marginVertical: 10 }}>
-      <View
-        style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
-      >
-        <Avatar.Image size={150} source={require("../assets/usb.jpg")} />
-        <Text style={{ fontSize: 18, fontWeight: "bold", width: 230 }}>
-          USB 3.0 SanDisk CZ73 Ultra Flair 64GB – Lưu trữ cả thế giới trong tầm
-          tay
-        </Text>
+      <View style={{display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", borderColor: 'blue',borderWidth: 1 , marginVertical: 20, paddingHorizontal: 20, paddingVertical: 10}}>
+        <MaterialCommunityIcons size={70} name="camera"></MaterialCommunityIcons>
+        <Text style={{fontWeight: 'bold', fontSize: 26, marginLeft: 20}}>Thêm hình ảnh</Text>
       </View>
 
       <View style={{marginTop: 50}}>
