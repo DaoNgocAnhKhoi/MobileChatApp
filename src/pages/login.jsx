@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 8,
     marginBottom: 20,
+    marginTop: 10,
   },
   footerText: {
     textAlign: "center",
