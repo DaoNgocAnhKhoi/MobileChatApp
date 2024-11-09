@@ -15,12 +15,12 @@ export default function Login() {
         <Image source={require("../assets/peach.png")} style={styles.logo} />
 
         {/* Title with text color */}
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.title, { color: colors.onSurface }]}>
           Get Started With PeachZy
         </Text>
 
         {/* Subtitle */}
-        <Text style={[styles.subtitle, { color: colors.text }]}>
+        <Text style={[styles.subtitle, { color: colors.onSurface }]}>
           Already have an account?{" "}
           <Text style={[styles.signInText, { color: colors.primary }]}>
             Sign In
@@ -33,18 +33,18 @@ export default function Login() {
           style={[styles.input, { backgroundColor: colors.surface }]}
           mode="outlined"
           outlineColor={colors.primary}
-          textColor={colors.text}
+          textColor={colors.onSurface}
         />
         <TextInput
           label="Last Name"
           style={[styles.input, { backgroundColor: colors.surface }]}
           mode="outlined"
           outlineColor={colors.primary}
-          textColor={colors.text}
+          textColor={colors.onSurface}
         />
 
         {/* Gender Selection */}
-        <Text style={[styles.genderLabel, { color: colors.text }]}>Gender</Text>
+        <Text style={[styles.genderLabel, { color: colors.onSurface }]}>Gender</Text>
         <View style={styles.radioGroup}>
           <RadioButton.Group
             onValueChange={(value) => setGender(value)}
@@ -52,13 +52,13 @@ export default function Login() {
           >
             <View style={styles.radioOption}>
               <RadioButton value="male" color={colors.primary} />
-              <Text style={[styles.radioLabel, { color: colors.text }]}>
+              <Text style={[styles.radioLabel, { color: colors.onSurface }]}>
                 Male
               </Text>
             </View>
             <View style={styles.radioOption}>
               <RadioButton value="female" color={colors.primary} />
-              <Text style={[styles.radioLabel, { color: colors.text }]}>
+              <Text style={[styles.radioLabel, { color: colors.onSurface }]}>
                 Female
               </Text>
             </View>
@@ -71,7 +71,7 @@ export default function Login() {
           style={[styles.input, { backgroundColor: colors.surface }]}
           mode="outlined"
           outlineColor={colors.primary}
-          textColor={colors.text}
+          textColor={colors.onSurface}
           keyboardType="numeric"
         />
         <TextInput
@@ -79,7 +79,7 @@ export default function Login() {
           style={[styles.input, { backgroundColor: colors.surface }]}
           mode="outlined"
           outlineColor={colors.primary}
-          textColor={colors.text}
+          textColor={colors.onSurface}
           keyboardType="email-address"
         />
         <TextInput
@@ -87,7 +87,7 @@ export default function Login() {
           style={[styles.input, { backgroundColor: colors.surface }]}
           mode="outlined"
           outlineColor={colors.primary}
-          textColor={colors.text}
+          textColor={colors.onSurface}
           secureTextEntry
         />
         <TextInput
@@ -95,7 +95,7 @@ export default function Login() {
           style={[styles.input, { backgroundColor: colors.surface }]}
           mode="outlined"
           outlineColor={colors.primary}
-          textColor={colors.text}
+          textColor={colors.onSurface}
           secureTextEntry
         />
 
@@ -111,7 +111,7 @@ export default function Login() {
         </Button>
 
         {/* Footer Text */}
-        <Text style={[styles.footerText, { color: colors.text }]}>
+        <Text style={[styles.footerText, { color: colors.onSurface }]}>
           I agree to{" "}
           <Text style={[styles.linkText, { color: colors.primary }]}>
             Terms of Service
