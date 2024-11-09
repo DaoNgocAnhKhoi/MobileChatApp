@@ -15,6 +15,14 @@ export default function Notifications() {
         </Text>
       </View>
 
+      <Button
+        mode="contained"
+        onPress={() => console.log("Pressed")}
+        style={{backgroundColor: '#0D5DB6', width: '60%', marginHorizontal: 'auto', marginVertical: 30}}
+      >
+       GỬI
+      </Button>
+
       <View style={{marginTop: 50}}>
         <Text style={{ fontSize: 22, fontWeight: "bold", textAlign: "center" }}>
           Cực kỳ hài lòng
