@@ -8,6 +8,7 @@ import Login from "./src/pages/login";
 import { useAppTheme } from "./src/hook/use-app-theme";
 import DraggableThemeSwitchButton from "./src/components/DraggableThemeSwitchButton";
 import { View, StyleSheet  } from "react-native";
+import ForgotPassword from "./src/pages/ForgotPassword";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -26,6 +27,11 @@ export default function App() {
             <Stack.Screen
               name="login"
               component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="forgotPassword"
+              component={ForgotPassword}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

@@ -1,13 +1,13 @@
 import * as React from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { Text, StyleSheet, Image, ScrollView } from "react-native";
 import { TextInput, Button, useTheme } from "react-native-paper";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Container from "../components/Container";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 
-export default function Login() {
-  const navigator = useNavigation<NavigationProp<any>>();
+export default function ForgotPassword() {
   const theme = useTheme();
   const { colors } = theme;
+  const navigator = useNavigation<NavigationProp<any>>();
 
   return (
     <Container>
@@ -15,16 +15,12 @@ export default function Login() {
         <Image source={require("../assets/peach.png")} style={styles.logo} />
 
         {/* Title with text color */}
-        <Text style={[styles.title, { color: colors.onSurface }]}>Welcome Back to PeachZy</Text>
+        <Text style={[styles.title, { color: colors.onSurface }]}>Forgot Your Password?</Text>
 
         {/* Subtitle */}
-        <Text style={[styles.subtitle, { color: colors.onSurface }]}>Don't have an account?{" "}
-          <Text style={[styles.signUpText, { color: colors.primary }]} onPress={() => {
-              navigator.navigate("register");
-          }}>Sign Up</Text>
-        </Text>
+        <Text style={[styles.subtitle, { color: colors.onSurface }]}>Enter your email address and we'll send you a link to reset your password.</Text>
 
-        {/* Form Inputs */}
+        {/* Email Input */}
         <TextInput
           label="Email Address"
           style={[styles.input, { backgroundColor: colors.surface }]}
@@ -33,31 +29,28 @@ export default function Login() {
           textColor={colors.onSurface}
           keyboardType="email-address"
         />
-        <TextInput
-          label="Password"
-          style={[styles.input, { backgroundColor: colors.surface }]}
-          mode="outlined"
-          outlineColor={colors.primary}
-          textColor={colors.onSurface}
-          secureTextEntry
-        />
 
-        {/* Login Button */}
+        {/* Send Reset Link Button */}
         <Button
           mode="contained"
           style={styles.button}
           buttonColor={colors.primary}
           textColor={colors.onPrimary}
-          onPress={() => {}}
+          onPress={() => {
+            // Logic to handle sending reset link goes here
+          }}
         >
-          Login
+          Send Reset Link
         </Button>
 
-        {/* Forgot Password Link */}
-        <Text style={[styles.forgotPasswordText, { color: colors.primary }]} onPress={() => {
-            navigator.navigate("forgotPassword");
-        }
-        }>Forgot your password?</Text>
+        {/* Back to Login Link */}
+        <Text
+          style={[styles.backToLoginText, { color: colors.primary }]}
+          onPress={() => {
+            navigator.navigate("login");
+        }}>
+          Back to Login
+        </Text>
       </ScrollView>
     </Container>
   );
@@ -81,9 +74,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginBottom: 20,
-  },
-  signUpText: {
-    fontWeight: "bold",
+    textAlign: "center",
   },
   input: {
     width: "100%",
@@ -95,7 +86,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
   },
-  forgotPasswordText: {
+  backToLoginText: {
     textAlign: "center",
     marginTop: 10,
     textDecorationLine: "underline",
