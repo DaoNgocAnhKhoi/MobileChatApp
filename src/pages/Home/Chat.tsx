@@ -1,6 +1,14 @@
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import Container from "../../components/Container";
 import { useTheme } from "react-native-paper";
+import AntDesign from "react-native-vector-icons/AntDesign";
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function Chat() {
@@ -24,7 +32,18 @@ export default function Chat() {
           User Name
         </Text>
       </View>
-      <View style={{ display: "flex", flex: 1, marginTop: 100 }}>
+      <View style={styles.containerSearch}>
+        <AntDesign
+          name="search1"
+          size={25}
+          style={{ marginLeft: 10, color: colors.onBackground }}
+        />
+        <TextInput
+          placeholder="Search by user name"
+          style={{ marginLeft: 10, color: colors.onBackground, flex: 1 }}
+        />
+      </View>
+      <View style={{ display: "flex", flex: 1, marginTop: 15 }}>
         <View
           style={[
             styles.containerItemMessage,
@@ -75,6 +94,19 @@ export default function Chat() {
   );
 }
 const styles = StyleSheet.create({
+  containerSearch: {
+    width: " 95%",
+    marginTop: 100,
+    height: 50,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: "2.5%",
+
+  },
   itemMessage: {
     fontWeight: 300,
     marginLeft: 10,
