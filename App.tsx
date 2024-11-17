@@ -7,13 +7,14 @@ import Register from "./src/pages/Register";
 import Login from "./src/pages/login";
 import { useAppTheme } from "./src/hook/use-app-theme";
 import DraggableThemeSwitchButton from "./src/components/DraggableThemeSwitchButton";
-import { View, StyleSheet  } from "react-native";
+import { View, StyleSheet } from "react-native";
 import ForgotPassword from "./src/pages/ForgotPassword";
+import { store } from "./src/configuration/redux";
+import { Provider } from "react-redux";
 const Stack = createStackNavigator();
 
-export default function App() {
+function Navigation() {
   const { navigationTheme } = useAppTheme();
-
   return (
     <ThemeProvider>
       <NavigationContainer theme={navigationTheme}>
@@ -41,11 +42,18 @@ export default function App() {
     </ThemeProvider>
   );
 }
+export default function App() {
+  return(
+    <Provider store={store}>
+      <Navigation />
+    </Provider>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%', // Ensures the container takes up the full width
+    width: "100%", // Ensures the container takes up the full width
     justifyContent: "center",
     backgroundColor: "transparent", // Allow background color from theme
   },
