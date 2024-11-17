@@ -3,11 +3,12 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ThemeProvider } from "./src/context/theme-provider";
+import Register from "./src/pages/Register";
 import Login from "./src/pages/login";
 import { useAppTheme } from "./src/hook/use-app-theme";
 import DraggableThemeSwitchButton from "./src/components/DraggableThemeSwitchButton";
 import { View, StyleSheet  } from "react-native";
-import HomeScreen from "./src/pages/Home/Home";
+import ForgotPassword from "./src/pages/ForgotPassword";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -17,10 +18,20 @@ export default function App() {
     <ThemeProvider>
       <NavigationContainer theme={navigationTheme}>
         <View style={styles.container}>
-          <Stack.Navigator initialRouteName="login">
+          <Stack.Navigator initialRouteName="register">
+            <Stack.Screen
+              name="register"
+              component={Register}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="login"
-              component={HomeScreen}
+              component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="forgotPassword"
+              component={ForgotPassword}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>
