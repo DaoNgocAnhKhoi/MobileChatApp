@@ -104,7 +104,6 @@ export const login = createAsyncThunk(
     ):Promise<LoginResponse> => {
         try {
             const response:LoginResponse = await accountApi.fetchLogin(credentials);
-            console.log(response)
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
@@ -172,7 +171,7 @@ const authenticationSlice = createSlice({
                 state.access_token = "";
             })
             .addCase(login.fulfilled, (state, action) => {
-                if (action.payload?.user) {
+                if (action.payload?.access_token) {
                     state.isAuthenticated = true;
                     state.user = action.payload.user;
                     state.message = "Login successful.";
