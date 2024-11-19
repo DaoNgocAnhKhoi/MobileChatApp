@@ -3,11 +3,16 @@ import { normalize, schema } from "normalizr";
 import accountApi from "../api/accountApi";
 
 
-interface UserInformations {
-    name: string;
+export interface UserInformations {
+    id: string;
+    firstName: string;
+    lastName: string;
     email: string;
+    gender:"male"|"female";
+    birthDate: Date;
     // Add other fields based on your user information structure
 }
+
 
 interface LoginResponse {
     access_token: string;
@@ -104,6 +109,7 @@ export const login = createAsyncThunk(
     ):Promise<LoginResponse> => {
         try {
             const response:LoginResponse = await accountApi.fetchLogin(credentials);
+            console.log(response)
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
@@ -144,7 +150,7 @@ interface AuthenticationState {
     isAuthenticated: boolean;
     message: string;
     access_token: string;
-    user: any | null;
+    user: UserInformations | null;
 }
 
 const initialState: AuthenticationState = {

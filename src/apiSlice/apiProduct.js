@@ -1,16 +1,17 @@
 // Or from '@reduxjs/toolkit/query/react'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query'
+import { BASE_URL } from '../api/base_url';
 
 const api = createApi({
     baseQuery: fetchBaseQuery({
-        baseUrl: '/',
+        baseUrl: BASE_URL+"api/",
     }),
     tagTypes: ['Post'],
     endpoints: (build) => ({
         // The query accepts a number and returns a Post
         getPost: build.query({
             // note: an optional `queryFn` may be used in place of `query`
-            query: (id) => ({ url: `post/${id}` }),
+            query: (id) => ({ url: `find-list-friend-by-user-id/${id}` }),
             // Pick out data and prevent nested properties in a hook or selector
             transformResponse: (response, meta, arg) => response.data,
             // Pick out errors and prevent nested properties in a hook or selector

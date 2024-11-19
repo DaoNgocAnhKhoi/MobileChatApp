@@ -1,6 +1,6 @@
 // src/App.js
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ThemeProvider } from "./src/context/theme-provider";
 import Register from "./src/pages/Register";
@@ -11,7 +11,9 @@ import { View, StyleSheet } from "react-native";
 import ForgotPassword from "./src/pages/ForgotPassword";
 import { RootState, store } from "./src/configuration/redux";
 import { Provider, useSelector } from "react-redux";
-import HomeScreen from "./src/pages/Home/Home";
+import HomeScreen from "./src/pages/ItemPageOfTabHome/Home";
+import { Message } from "./src/pages/Message";
+import { StompContextProvider } from "./src/pages/ItemPageOfTabHome/StompContext";
 const Stack = createStackNavigator();
 
 function Navigation() {
@@ -19,13 +21,21 @@ function Navigation() {
   const { access_token, isAuthenticated, message, user } = useSelector(
     (state: RootState) => state.authentication
   );
-  console.log(isAuthenticated)
   return (
     <ThemeProvider>
       <NavigationContainer theme={navigationTheme}>
         <View style={styles.container}>
           {isAuthenticated ? (
-            <HomeScreen />
+            <StompContextProvider>
+              <Stack.Navigator>
+                <Stack.Screen
+                  name="Home"
+                  component={HomeScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="Message" component={Message} />
+              </Stack.Navigator>
+            </StompContextProvider>
           ) : (
             <Stack.Navigator initialRouteName="login">
               <Stack.Screen

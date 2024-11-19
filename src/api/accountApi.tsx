@@ -1,3 +1,4 @@
+import { UserInformations } from "../features/authenticationSlice";
 import { BASE_URL } from "./base_url";
 
 // Define types for the function parameters and return values
@@ -6,11 +7,7 @@ interface Credentials {
   password: string;
 }
 
-interface UserInformations {
-  name: string;
-  email: string;
-  // Add other fields based on your user information structure
-}
+
 
 interface LoginResponse {
   access_token: string;
@@ -32,7 +29,7 @@ const accountApi = {
   // Define the function type with parameters and return type
   async fetchLogin(credentials: Credentials): Promise<LoginResponse> {
     try {
-      const response = await fetch(BASE_URL + "login", {
+      const response = await fetch(BASE_URL + "api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
