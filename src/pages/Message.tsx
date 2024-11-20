@@ -23,7 +23,7 @@ import { useSendMessageMutation } from "../apiSlice/apiMessage";
 import { MessageEntity } from "./ItemPageOfTabHome/Chat";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../configuration/redux";
-import { addMessage, getMessages } from "../features/messageSlice";
+import { addMessage, addOldMessageStartCreatedAt, getMessages } from "../features/messageSlice";
 import ItemMessage from "../components/ItemMessage";
 import { changeMessageNewInFriend } from "../features/friendsSlice";
 interface M {
@@ -79,6 +79,10 @@ export function Message({ route }: any) {
       },
     });
   }, [friendName]);
+  useEffect(()=>{
+    console.log("messagesmessagesmessagesmessages")
+    console.log(messages.length)
+  },[messages])
   useEffect(() => {
     if (friendId && user && user.id) {
       dispatch(
@@ -91,7 +95,22 @@ export function Message({ route }: any) {
       );
     }
   }, [friendId]);
-
+  const handleLoadMessageOldByCreatedAt = (
+    friendId: string,
+    userId: string,
+    access_token: string,
+    createdAt: Date
+  ) => {
+    console.log(createdAt)
+    dispatch(
+      addOldMessageStartCreatedAt({
+        friendId,
+        userId,
+        access_token,
+        createdAt,
+      })
+    );
+  };
   const handleSendMessage = async (newMessage: MessageEntity) => {
     try {
       // Gửi message tới server với destination
@@ -147,6 +166,18 @@ export function Message({ route }: any) {
         inverted
         onEndReached={() => {
           console.log("loading...");
+
+          if (user && messages[messages.length - 1]) {
+            const createdAt = messages[messages.length - 1]?.createdAt;
+            if (createdAt) {
+              handleLoadMessageOldByCreatedAt(
+                friendId,
+                user?.id,
+                access_token,
+                new Date(createdAt)
+              );
+            }
+          }
         }}
       />
       <View style={styles.containerSearch}>

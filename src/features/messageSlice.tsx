@@ -33,6 +33,37 @@ export const getMessages = createAsyncThunk(
     }
   }
 );
+export const addOldMessageStartCreatedAt = createAsyncThunk(
+  "addOldMessageStartCreatedAt",
+  async (
+    {
+      friendId,
+      userId,
+      access_token,
+      createdAt,
+    }: {
+      friendId: string;
+      userId: string;
+      access_token: string;
+      createdAt: Date;
+    },
+    thunkAPI: any
+  ): Promise<MessageEntity[]> => {
+    try {
+      const response: MessageEntity[] = await messageApi.fethGetMessages(
+        friendId,
+        userId,
+        access_token,
+        createdAt
+      );
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+///load add messages old by createdAt message last on the file message into the messages
+
 const initialState: { messages: MessageEntity[] } = {
   messages: [],
 };
@@ -65,11 +96,22 @@ const messagesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getMessages.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.messages = sortByCreatedAt(action.payload);
-      }
-    });
+    builder
+      .addCase(getMessages.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.messages = sortByCreatedAt(action.payload);
+        }
+      })
+      .addCase(
+        addOldMessageStartCreatedAt.fulfilled,
+        (state, action: PayloadAction<MessageEntity[]>) => {
+          if (action.payload) {
+            console.log("action.payload.length")
+            console.log(action.payload.length)
+            state.messages = sortByCreatedAt([...state.messages, ...action.payload]);
+          }
+        }
+      );
   },
 });
 function sortByCreatedAt(messages: MessageEntity[]): MessageEntity[] {

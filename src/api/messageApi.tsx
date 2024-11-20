@@ -14,7 +14,6 @@ const messageApi = {
         });
         // Kiểm tra nội dung phản hồi
         const message = await response.text();
-        console.log(message);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
