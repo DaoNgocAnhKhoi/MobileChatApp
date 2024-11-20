@@ -3,14 +3,16 @@ import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import { TextInput, RadioButton, Button, useTheme } from "react-native-paper";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Container from "../components/Container";
+import { useDispatch } from "react-redux";
 
 export default function Register() {
   const navigator = useNavigation<NavigationProp<any>>();
   const theme = useTheme();
   const { colors } = theme;
+  
 
-  const [gender, setGender] = React.useState("male"); // Default selected value
-
+  const [gender, setGender] = React.useState("male"); 
+ 
   return (
     <Container>
       <ScrollView contentContainerStyle={styles.container}>

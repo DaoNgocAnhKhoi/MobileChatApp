@@ -1,12 +1,19 @@
 // src/Main.tsx
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { Provider as PaperProvider } from 'react-native-paper';
-import App from '../App';
-import { useAppTheme } from './context/theme-provider';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { Provider as PaperProvider } from "react-native-paper";
+import App from "../App";
+import { useAppTheme } from "./context/theme-provider";
+import { Provider } from "react-redux";
+import { store } from "./configuration/redux";
 
 export default function Main() {
-  return <ThemedApp />;
+  console.log("A")
+  return (
+    <Provider store={store}>
+      <ThemedApp />
+    </Provider>
+  );
 }
 
 // ThemedApp uses `useAppTheme` to get `paperTheme` and `navigationTheme`

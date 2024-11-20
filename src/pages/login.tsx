@@ -3,12 +3,24 @@ import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import { TextInput, Button, useTheme } from "react-native-paper";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Container from "../components/Container";
+import { useDispatch } from "react-redux";
+import { login } from "../features/authenticationSlice";
+import { AppDispatch } from "../configuration/redux";
 
 export default function Login() {
   const navigator = useNavigation<NavigationProp<any>>();
   const theme = useTheme();
+  const dispatch = useDispatch<AppDispatch>();
   const { colors } = theme;
+  const credentials = React.useRef({ username: "", password: "" });
 
+ // Default selected value
+ const handleLogin = (e: any) => {
+  e.preventDefault();
+  dispatch(login(credentials.current));
+  console.log("handle")
+
+};
   return (
     <Container>
       <ScrollView contentContainerStyle={styles.container}>
@@ -32,6 +44,9 @@ export default function Login() {
           outlineColor={colors.primary}
           textColor={colors.onSurface}
           keyboardType="email-address"
+          onChangeText={(text: string) => {
+            credentials.current.username = text;
+          }}
         />
         <TextInput
           label="Password"
@@ -40,6 +55,9 @@ export default function Login() {
           outlineColor={colors.primary}
           textColor={colors.onSurface}
           secureTextEntry
+          onChangeText={(text:string) => {
+            credentials.current.password = text;
+          }}
         />
 
         {/* Login Button */}
@@ -48,7 +66,7 @@ export default function Login() {
           style={styles.button}
           buttonColor={colors.primary}
           textColor={colors.onPrimary}
-          onPress={() => {}}
+          onPress={(e:any)=>{handleLogin(e)}}
         >
           Login
         </Button>
