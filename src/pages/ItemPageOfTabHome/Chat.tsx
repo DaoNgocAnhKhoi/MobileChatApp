@@ -35,7 +35,7 @@ interface Friend {
   userId2: string;
   fullNameUser2: string;
   message: MessageEntity | null;
-  updatedAt: Date;
+  updatedAt: string;
 }
 // private Long id;
 
@@ -48,10 +48,10 @@ interface Friend {
 // @CreatedDate
 // private LocalDateTime createdAt;
 export interface MessageEntity {
-  senderId: string|undefined;
+  senderId: string;
   receiverId: string;
   content: string;
-  createdAt: Date|null;
+  createdAt: string | null;
   isRead: boolean;
 }
 interface ItemListFriendProps {
@@ -166,7 +166,22 @@ function ItemListFriend({ friend }: { friend: Friend }) {
               ? friend.fullNameUser2
               : friend.fullNameUser1}
           </Text>
-          <Text style={[styles.itemMessage, { color: colors.onSurface }]}>
+          <Text
+            style={[
+              styles.itemMessage,
+              {
+                color: colors.onSurface,
+                fontWeight:
+                  friend.message?.senderId === user?.id ||
+                  friend.message?.isRead
+                    ? 300
+                    : 800,
+              },
+            ]}
+          >
+            {friend.message?.senderId === user?.id
+              ? "You send: "
+              : "Friend send:"}
             {friend.message ? friend.message.content : ""}
           </Text>
         </View>
@@ -176,7 +191,9 @@ function ItemListFriend({ friend }: { friend: Friend }) {
             { color: colors.onSurface },
           ]}
         >
-          {friend.message && friend.message?.createdAt ? timeDifference(friend.message?.createdAt) : ""}
+          {friend.message && friend.message?.createdAt
+            ? timeDifference(new Date(friend.message?.createdAt))
+            : ""}
         </Text>
       </View>
     </TouchableOpacity>

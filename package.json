@@ -33,6 +33,7 @@
     "reconnecting-websocket": "^4.4.0",
     "redux": "^5.0.1",
     "sockjs-client": "^1.6.1",
+    "text-encoding": "^0.7.0",
     "typescript": "~5.3.3"
   },
   "devDependencies": {

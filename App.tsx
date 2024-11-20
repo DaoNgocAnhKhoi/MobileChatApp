@@ -14,6 +14,7 @@ import { Provider, useSelector } from "react-redux";
 import HomeScreen from "./src/pages/ItemPageOfTabHome/Home";
 import { Message } from "./src/pages/Message";
 import { StompContextProvider } from "./src/pages/ItemPageOfTabHome/StompContext";
+import 'text-encoding';
 const Stack = createStackNavigator();
 
 function Navigation() {

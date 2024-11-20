@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authenticationReducer from "../features/authenticationSlice";
 import { apiFriends } from "../apiSlice/apiFriends";
 import friendReducer from "../features/friendsSlice";
+import messageReducer from "../features/messageSlice";
 import { apiMessage } from "../apiSlice/apiMessage";
 export const store = configureStore({
   reducer: {
@@ -9,6 +10,7 @@ export const store = configureStore({
     [apiMessage.reducerPath]: apiMessage.reducer,
     authentication: authenticationReducer,
     friends: friendReducer,
+    messages:messageReducer,
   },
   // Thêm middleware của apiFriends
   middleware: (getDefaultMiddleware) =>

@@ -166,7 +166,8 @@ const authenticationSlice = createSlice({
     reducers: {
         authenticationLog(state) {
             console.log(current(state));
-        },
+        }
+       
     },
     extraReducers: (builder) => {
         builder
