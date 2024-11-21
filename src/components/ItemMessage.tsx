@@ -71,10 +71,15 @@ export default function ItemMessage({
   useEffect(() => {
     if (message.senderId === user?.id) {
       setUseStatePosition("right");
+      console.log("right");
     } else {
       setUseStatePosition("left");
     }
   }, [useStatePosition]);
+  useEffect(()=>{
+    console.log("message....................");
+    console.log(message);
+  },[])
   return (
     <View>
       {isShowDay ? (
@@ -87,7 +92,9 @@ export default function ItemMessage({
               textAlignVertical: "center",
             }}
           >
-            {date&& date.createdAt ? date.createdAt.toLocaleDateString() : ""}
+            {message && message.createdAt
+              ? new Date(message.createdAt).toLocaleDateString()
+              : ""}
           </Text>
         </View>
       ) : (
@@ -132,13 +139,13 @@ export default function ItemMessage({
           marginTop: 5,
         }}
       >
-        {date && date.createdAt
+        {message && message.createdAt
           ? isShowTime
-            ? date.createdAt.toLocaleTimeString(undefined, {
+            ? new Date(message.createdAt).toLocaleTimeString(undefined, {
                 hour: "2-digit",
                 minute: "2-digit",
               })
-            : timeDifference(date.createdAt)
+            : timeDifference(new Date(message.createdAt))
           : ""}
       </Text>
     </View>

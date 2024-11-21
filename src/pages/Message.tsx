@@ -23,9 +23,17 @@ import { useSendMessageMutation } from "../apiSlice/apiMessage";
 import { MessageEntity } from "./ItemPageOfTabHome/Chat";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../configuration/redux";
-import { addMessage, addOldMessageStartCreatedAt, getMessages } from "../features/messageSlice";
+import {
+  addMessage,
+  addOldMessageStartCreatedAt,
+  getMessages,
+  setIsReadMessageStartDate,
+} from "../features/messageSlice";
 import ItemMessage from "../components/ItemMessage";
-import { changeMessageNewInFriend } from "../features/friendsSlice";
+import {
+  changeMessageNewInFriend,
+  setIsReadMessageIntoFriend,
+} from "../features/friendsSlice";
 interface M {
   id: number;
   text: string;
@@ -35,7 +43,7 @@ export function Message({ route }: any) {
   const dispatch = useDispatch<AppDispatch>();
   const theme = useTheme();
   const { colors } = theme;
-  const { friendId, friendName } = route.params;
+  const { friendId, friendName, id } = route.params;
   const context = useContext(StompContext);
   const dateSend = useRef({ date: new Date() });
   const flatListRef = useRef<FlatList<any>>(null);
@@ -49,12 +57,10 @@ export function Message({ route }: any) {
   const messages: MessageEntity[] = useSelector(
     (state: RootState) => state.messages.messages
   );
-  const message = useRef<MessageEntity>({
+  const [messageContentSend, setMessageContentSend] = useState<{
+    content: string;
+  }>({
     content: "",
-    senderId: user?.id ? user.id : "",
-    receiverId: friendId,
-    isRead: false,
-    createdAt: null,
   });
   useEffect(() => {
     // Tự động cuộn xuống cuối khi messages thay đổi
@@ -79,10 +85,28 @@ export function Message({ route }: any) {
       },
     });
   }, [friendName]);
-  useEffect(()=>{
-    console.log("messagesmessagesmessagesmessages")
-    console.log(messages.length)
-  },[messages])
+
+  useEffect(() => {
+    dispatch(
+      setIsReadMessageStartDate({
+        friendId,
+        access_token,
+        createdAt: new Date(),
+      })
+    );
+  }, []);
+  useEffect(() => {
+    dispatch(
+      setIsReadMessageIntoFriend({
+        friendId,
+        access_token,
+        id,
+      })
+    );
+    messages.map((mes) => {
+      console.log(mes);
+    });
+  }, [messages]);
   useEffect(() => {
     if (friendId && user && user.id) {
       dispatch(
@@ -101,7 +125,6 @@ export function Message({ route }: any) {
     access_token: string,
     createdAt: Date
   ) => {
-    console.log(createdAt)
     dispatch(
       addOldMessageStartCreatedAt({
         friendId,
@@ -111,10 +134,18 @@ export function Message({ route }: any) {
       })
     );
   };
-  const handleSendMessage = async (newMessage: MessageEntity) => {
+  const handleSendMessage = async (content: string) => {
     try {
       // Gửi message tới server với destination
-      newMessage.createdAt = new Date().toISOString();
+      const newMessage: MessageEntity = {
+        id: "",
+        senderId: user ? user?.id : "",
+        receiverId: friendId,
+        content: content,
+        createdAt: new Date().toISOString(),
+        isRead: false, // Default is false
+      };
+
       stompClient?.publish({
         destination: "/app/send-message",
         headers: {
@@ -124,25 +155,27 @@ export function Message({ route }: any) {
           senderId: newMessage.senderId,
           receiverId: newMessage.receiverId,
           content: newMessage.content,
-          createdAt: newMessage.createdAt,
+          createdAt: new Date().toISOString(),
+          isRead: false, // Default is false
         }),
       });
       dispatch(addMessage(newMessage));
       if (user && user?.id) {
         const info = {
-          friendId: newMessage.receiverId, // The friend ID
+          friendId: friendId, // The friend ID
           userId: user?.id, // User ID (default empty if user is undefined)
           access_token: access_token, // Access token for authentication
           message: newMessage, // The message object
         };
         dispatch(changeMessageNewInFriend(info));
       }
+      setMessageContentSend({ content: "" });
     } catch (err) {
       console.error("Error sending message:", err);
     }
   };
   const handleChangeMessage = (text: string) => {
-    message.current.content = text;
+    setMessageContentSend({ content: text });
   };
   const setDateSend = (date: Date) => {
     dateSend.current.date = date;
@@ -154,7 +187,9 @@ export function Message({ route }: any) {
         ref={flatListRef} // Gán ref vào FlatList
         style={{ flex: 1, width: "100%" }}
         data={messages}
-        keyExtractor={(item, index) => String(index)}
+        keyExtractor={(item, index) =>
+          new Date(item.createdAt).getTime().toString()
+        }
         renderItem={({ item }) => (
           <ItemMessage
             message={item}
@@ -167,7 +202,7 @@ export function Message({ route }: any) {
         onEndReached={() => {
           console.log("loading...");
 
-          if (user && messages[messages.length - 1]) {
+          if (user && messages) {
             const createdAt = messages[messages.length - 1]?.createdAt;
             if (createdAt) {
               handleLoadMessageOldByCreatedAt(
@@ -182,6 +217,7 @@ export function Message({ route }: any) {
       />
       <View style={styles.containerSearch}>
         <TextInput
+          value={messageContentSend.content}
           placeholder="Search by user name"
           style={{ marginLeft: 10, color: colors.onBackground, flex: 1 }}
           onChangeText={(text) => {
@@ -191,7 +227,7 @@ export function Message({ route }: any) {
         <TouchableOpacity
           style={{ marginRight: 15 }}
           onPress={() => {
-            handleSendMessage(message.current);
+            handleSendMessage(messageContentSend.content);
           }}
         >
           <Feather

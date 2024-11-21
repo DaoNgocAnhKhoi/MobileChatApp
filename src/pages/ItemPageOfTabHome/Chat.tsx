@@ -9,13 +9,14 @@ import {
 import Container from "../../components/Container";
 import { useTheme } from "react-native-paper";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../configuration/redux";
 import { useGetAllFriendsByUserIdQuery } from "../../apiSlice/apiFriends";
 import { useEffect } from "react";
 import { timeDifference } from "../../utils/format";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { FriendEntity, setFriends } from "../../features/friendsSlice";
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // {
@@ -29,13 +30,12 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 //   "updatedAt": "2024-11-18T12:50:24.317"
 // }
 interface Friend {
-  id: number;
+  id: string;
   userId1: string;
   fullNameUser1: string;
   userId2: string;
   fullNameUser2: string;
   message: MessageEntity | null;
-  updatedAt: string;
 }
 // private Long id;
 
@@ -48,6 +48,7 @@ interface Friend {
 // @CreatedDate
 // private LocalDateTime createdAt;
 export interface MessageEntity {
+  id:string;
   senderId: string;
   receiverId: string;
   content: string;
@@ -63,17 +64,24 @@ export default function Chat() {
   const { colors } = theme;
   const user = useSelector((state: RootState) => state.authentication.user);
   const { data, isError, isFetching, isLoading, isSuccess, refetch } =
-    useGetAllFriendsByUserIdQuery(user?.id);
+    useGetAllFriendsByUserIdQuery( user? user?.id: "");
+    const { friends }: { friends: FriendEntity[] } = useSelector(
+      (state: RootState) => state.friends
+    );
+  const dispatch = useDispatch();
   useEffect(() => {
     refetch();
   }, []);
+  useEffect(() => {
+    dispatch(setFriends(data));
+  }, [data]);
 
   return (
     <View style={{ flex: 1 }}>
       <FlatList
         style={{ flex: 1, width: "100%" }}
-        data={data as Friend[]}
-        keyExtractor={(item) => item.updatedAt.toString()}
+        data={friends as Friend[]}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => <ItemListFriend friend={item} />}
         ListHeaderComponent={
           <View>
@@ -117,10 +125,15 @@ function ItemListFriend({ friend }: { friend: Friend }) {
   const user = useSelector((state: RootState) => state.authentication.user);
   console.log("friend");
   console.log(friend);
-  const handleMovePageMessage = (friendId: string, friendName: String) => {
+  const handleMovePageMessage = (
+    friendId: string,
+    friendName: String,
+    id: string
+  ) => {
     navigation.navigate("Message", {
       friendId: friendId,
       friendName: friendName,
+      id: id,
     });
   };
   return (
@@ -128,8 +141,16 @@ function ItemListFriend({ friend }: { friend: Friend }) {
       style={{ display: "flex", flex: 1, marginTop: 15 }}
       onPress={() => {
         user?.id === friend.userId1
-          ? handleMovePageMessage(friend.userId2, friend.fullNameUser2)
-          : handleMovePageMessage(friend.userId1, friend.fullNameUser1);
+          ? handleMovePageMessage(
+              friend.userId2,
+              friend.fullNameUser2,
+              friend.id
+            )
+          : handleMovePageMessage(
+              friend.userId1,
+              friend.fullNameUser1,
+              friend.id
+            );
       }}
     >
       <View

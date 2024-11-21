@@ -16,9 +16,8 @@ import { Client, Stomp, StompHeaders } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import * as StompJs from "@stomp/stompjs";
 import { addMessage } from "../../features/messageSlice";
-import {
-  changeMessageNewInFriend
-} from "../../features/friendsSlice";
+import { changeMessageNewInFriend } from "../../features/friendsSlice";
+import { AppState } from "react-native";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -39,7 +38,8 @@ function TabNavigator() {
     throw new Error("ComponentA must be used within a MyContextProvider");
   }
   const { stompClient, setStompClient } = context;
-
+  const [appState, setAppState] = useState(AppState.currentState);
+  useEffect(() => {}, []);
   // Khởi tạo kết nối WebSocket khi component được mount
   useEffect(() => {
     // Tạo kết nối SockJS
@@ -50,27 +50,22 @@ function TabNavigator() {
       debug: (msg: string) => console.log("STOMP Debug: ", msg),
       reconnectDelay: 5000, // Thử kết nối lại sau 5 giây
     });
-
     stompClient.onConnect = (frame: any) => {
-      console.log("Connected: ", frame);
       stompClient.subscribe(
         "/app/authentication",
         (message) => {
           const jsonObject: MessageEntity = JSON.parse(message.body);
-  
+
           dispatch(addMessage(jsonObject));
-          if(user && user?.id){
+          if (user && user?.id) {
             const info = {
-              friendId: jsonObject.senderId,   // The friend ID
-              userId: user?.id,          // User ID (default empty if user is undefined)
-              access_token: access_token,      // Access token for authentication
-              message: jsonObject,             // The message object
+              friendId: jsonObject.senderId, // The friend ID
+              userId: user?.id, // User ID (default empty if user is undefined)
+              access_token: access_token, // Access token for authentication
+              message: jsonObject, // The message object
             };
-            dispatch(
-              changeMessageNewInFriend(info) as any
-            );
+            dispatch(changeMessageNewInFriend(info) as any);
           }
-          
         },
         {
           Authorization: "Bearer " + access_token, // Gửi token nếu cần
@@ -83,6 +78,42 @@ function TabNavigator() {
     };
     stompClient.activate();
     setStompClient(stompClient);
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      setAppState(nextAppState);
+      console.log("AppState changed:", nextAppState);
+
+      // Kiểm tra trạng thái là 'background' hoặc 'inactive'
+      if (nextAppState === "background") {
+        console.log("App moved to background");
+        console.log(stompClient);
+        stompClient?.publish({
+          destination: "/app/disconnect",
+          headers: {
+            Authorization: "Bearer " + access_token,
+          },
+        });
+        
+        // stompClient.deactivate()
+        // Thực hiện hành động khi app chuyển sang nền, ví dụ lưu trữ dữ liệu
+      } else if (nextAppState === "inactive") {
+        console.log("App is inactive");
+        // Thực hiện hành động khi app không còn ở trạng thái active
+      }else if(nextAppState === "active"){
+        stompClient?.publish({
+          destination: "/app/authentication",
+          headers: {
+            Authorization: "Bearer " + access_token,
+          },
+        });
+        
+        // stompClient.activate();
+      }
+    });
+
+    // Cleanup khi component unmount
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (

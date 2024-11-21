@@ -62,6 +62,33 @@ export const addOldMessageStartCreatedAt = createAsyncThunk(
     }
   }
 );
+export const setIsReadMessageStartDate = createAsyncThunk(
+  "setIsReadMessageStartDate",
+  async (
+    {
+      friendId,
+      access_token,
+      createdAt,
+    }: {
+      friendId: string;
+      access_token: string;
+      createdAt: Date;
+    },
+    thunkAPI: any
+  ): Promise<{ friendId: string }> => {
+    try {
+      await messageApi.fethSetIsReadMessageStartDate(
+        friendId,
+        access_token,
+        createdAt
+      );
+      return { friendId: friendId };
+    } catch (error: any) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 ///load add messages old by createdAt message last on the file message into the messages
 
 const initialState: { messages: MessageEntity[] } = {
@@ -75,17 +102,10 @@ const messagesSlice = createSlice({
       state.messages = sortByCreatedAt(action.payload.messages);
     },
     addMessage: (state, action: PayloadAction<MessageEntity>) => {
-      if (action.payload.createdAt) {
-        const serializedMessage = {
-          ...action.payload,
-          createdAt: new Date(action.payload.createdAt).toISOString(), // Serialize
-        };
-        state.messages.push(serializedMessage);
-      } else {
-        state.messages.push(action.payload);
-      }
-
+      state.messages.push(action.payload);
       setMessages(sortByCreatedAt(state.messages));
+      console.log("state.messages.length");
+      console.log(state.messages.length);
     },
     addMessages: (
       state,
@@ -102,16 +122,18 @@ const messagesSlice = createSlice({
           state.messages = sortByCreatedAt(action.payload);
         }
       })
-      .addCase(
-        addOldMessageStartCreatedAt.fulfilled,
-        (state, action: PayloadAction<MessageEntity[]>) => {
-          if (action.payload) {
-            console.log("action.payload.length")
-            console.log(action.payload.length)
-            state.messages = sortByCreatedAt([...state.messages, ...action.payload]);
+
+      .addCase(setIsReadMessageStartDate.fulfilled, (state, action) => {
+        state.messages = state.messages.map((mess) => {
+          if (mess.senderId === action.payload.friendId) {
+            mess.isRead = true;
           }
-        }
-      );
+          return mess;
+        });
+      })
+      .addCase(addOldMessageStartCreatedAt.fulfilled, (state, action) => {
+        state.messages = sortByCreatedAt([...state.messages,...action.payload]);
+      });
   },
 });
 function sortByCreatedAt(messages: MessageEntity[]): MessageEntity[] {

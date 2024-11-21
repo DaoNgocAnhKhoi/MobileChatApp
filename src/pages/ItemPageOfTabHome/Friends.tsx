@@ -1,4 +1,5 @@
 import {
+  FlatList,
   Image,
   StyleSheet,
   Text,
@@ -10,12 +11,43 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Container from "../../components/Container";
 import { useTheme } from "react-native-paper";
 import DotStatus from "../../components/DotSatus";
+import {
+  useGetListFriendsStatusQuery,
+} from "../../apiSlice/apiFriends";
+import { useSelector } from "react-redux";
+import { RootState } from "../../configuration/redux";
+import { FriendEntity } from "../../features/friendsSlice";
+import { useEffect } from "react";
+import { ItemFriendOnline } from "../../components/ItemFriendOnline";
+import { UserInformations } from "../../features/authenticationSlice";
 
 export default function Friends() {
   const theme = useTheme();
   const { colors } = theme;
+  const user = useSelector((state: RootState) => state.authentication.user);
+  const { data, isError, isFetching, isLoading, isSuccess, refetch } =
+  useGetListFriendsStatusQuery("");
+  
+  useEffect(() => {
+    refetch();
+
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
   return (
-    <Container style={{ justifyContent: "flex-start", marginTop: 20 }}>
+    <View
+      style={{
+        justifyContent: "flex-start",
+        marginTop: 60,
+        flex: 1,
+        margin: 20,
+      }}
+    >
       <TouchableOpacity
         style={[styles.addFriend, { backgroundColor: colors.primary }]}
       >
@@ -41,43 +73,13 @@ export default function Friends() {
           style={{ marginLeft: 10, color: colors.onBackground, flex: 1 }}
         />
       </View>
-      <View style={{ flex: 1, marginTop: 20 }}>
-        <View
-          style={{
-            height: 40,
-            display: "flex",
-            flexDirection: "row",
-            marginTop: 10,
-          }}
-        >
-          <View>
-            <Image
-              style={[styles.iconAvt, { marginTop: 0 }]}
-              source={require("../../../images/app/pngtree-character-default-avatar-png-image_5407167.jpg")}
-            />
-            <View style={{ position: "absolute", bottom: -3, right: -3 }}>
-              <DotStatus status="online" />
-            </View>
-          </View>
-          <Text
-            style={[
-              styles.userName,
-              {
-                color: colors.onSurface,
-                fontWeight: 500,
-                textAlignVertical: "top",
-                marginLeft: 10,
-                height: 30,
-              },
-            ]}
-          >
-            name
-          </Text>
-
-          <Text style={[styles.time, { color: colors.onSurface }]}>6 giờ</Text>
-        </View>
-      </View>
-    </Container>
+      <FlatList
+        style={{ flex: 1 }}
+        data={data as UserInformations[]}
+        keyExtractor={(item) => new Date(item.updatedAt).getTime().toString()}
+        renderItem={(item) => <ItemFriendOnline friend={item.item} />}
+      />
+    </View>
   );
 }
 const styles = StyleSheet.create({

@@ -21,6 +21,24 @@ const messageApi = {
         // Nếu phản hồi là JSON, parse nó
         return JSON.parse(message);
       } catch (error: any) {
+        console.error(error.message)
+        throw new Error(`Error fetching login: ${error.message}`);
+      }
+    },
+    async fethSetIsReadMessageStartDate(friendId: string,access_token:string, createdAt: Date) {
+      try {
+        const response = await fetch(BASE_URL + "api/change-readed-message-by-friendId-and-createdAt?friendId="+friendId+"&&createdAt="+createdAt.toISOString(), {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + access_token, 
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+      } catch (error: any) {
         throw new Error(`Error fetching login: ${error.message}`);
       }
     },

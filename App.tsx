@@ -1,5 +1,5 @@
 // src/App.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ThemeProvider } from "./src/context/theme-provider";
@@ -7,14 +7,14 @@ import Register from "./src/pages/Register";
 import Login from "./src/pages/login";
 import { useAppTheme } from "./src/hook/use-app-theme";
 import DraggableThemeSwitchButton from "./src/components/DraggableThemeSwitchButton";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, AppState } from "react-native";
 import ForgotPassword from "./src/pages/ForgotPassword";
 import { RootState, store } from "./src/configuration/redux";
 import { Provider, useSelector } from "react-redux";
 import HomeScreen from "./src/pages/ItemPageOfTabHome/Home";
 import { Message } from "./src/pages/Message";
 import { StompContextProvider } from "./src/pages/ItemPageOfTabHome/StompContext";
-import 'text-encoding';
+import "text-encoding";
 const Stack = createStackNavigator();
 
 function Navigation() {
@@ -63,6 +63,8 @@ function Navigation() {
   );
 }
 export default function App() {
+  
+
   return (
     <Provider store={store}>
       <Navigation />
