@@ -1,15 +1,35 @@
 import { BASE_URL } from "./base_url";
 
 // Define types for the function parameters and return values
-interface Credentials {
+export interface FriendEntity {
+  id: string;
+  userId1: string;
+  userId2: string;
+  message: MessageEntity | null;
+  fullNameUser1: string;
+  fullNameUser2: string;
+  active:boolean;
+  updateAt: Date;
+}
+export interface MessageEntity {
+  id:string;
+  senderId: string;
+  receiverId: string;
+  content: string;
+  createdAt: string | null;
+  isRead: boolean;
+}
+export interface Credentials {
   username: string;
   password: string;
 }
 
-interface UserInformations {
-  name: string;
-  email: string;
-  // Add other fields based on your user information structure
+export interface UserInformations {
+  firstName: string;  // Tên
+  lastName: string;   // Họ
+  email: string;      // Địa chỉ email
+  gender: "male" | "female"; // Giới tính
+  birthDate: string;  // Ngày sinh (định dạng YYYY-MM-DD)
 }
 
 interface LoginResponse {
@@ -60,13 +80,14 @@ const accountApi = {
     credentials: Credentials,
     userInformations: UserInformations
   ): Promise<RegisterResponse> {
+    console.log("Request payload:", JSON.stringify({ account: credentials, user: userInformations }));
     try {
       const response = await fetch(BASE_URL + "register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ credentials, userInformations }),
+        body: JSON.stringify({ account: credentials, user: userInformations }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -94,5 +115,6 @@ const accountApi = {
     }
   },
 };
+
 
 export default accountApi;

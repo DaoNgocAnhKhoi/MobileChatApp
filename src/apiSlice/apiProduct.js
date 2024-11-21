@@ -122,4 +122,4 @@ const api = createApi({
 
 // Actions to manage loading and error states
 const setLoading = (isLoading) => ({ type: 'SET_LOADING', payload: isLoading });
-    const setError = (hasError) => ({ type: 'SET_ERROR', payload: hasError });
+const setError = (hasError) => ({ type: 'SET_ERROR', payload: hasError });
