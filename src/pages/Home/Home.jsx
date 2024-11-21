@@ -1,10 +1,8 @@
 import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Feed from '../Feed.jsx';
-import Notifications from '../Notifications.jsx';
-import Profile from '../Profile.jsx';
-import Account from '../Account.jsx'
+import Notifications from './Notifications';
+import Profile from './Profile';
 import { useTheme } from 'react-native-paper';
 import Chat from './Chat';
 import Friends from './Friends';
