@@ -22,13 +22,21 @@ function Navigation() {
   const { access_token, isAuthenticated, message, user } = useSelector(
     (state: RootState) => state.authentication
   );
-  console.log(isAuthenticated)
   return (
     <ThemeProvider>
       <NavigationContainer theme={navigationTheme}>
         <View style={styles.container}>
           {isAuthenticated ? (
-            <HomeScreen />
+            <StompContextProvider>
+              <Stack.Navigator>
+                <Stack.Screen
+                  name="Home"
+                  component={HomeScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="Message" component={Message} />
+              </Stack.Navigator>
+            </StompContextProvider>
           ) : (
             <Stack.Navigator initialRouteName="login">
               <Stack.Screen
