@@ -14,8 +14,12 @@ export interface FriendEntity {
   message: MessageEntity | null;
   fullNameUser1: string;
   fullNameUser2: string;
-  active:boolean;
+  active: boolean;
   updatedAt: string;
+  sendId: string;
+  status:"pending|friend",
+  note: boolean;
+  
 }
 const initialState: FriendEntity[] = [];
 export const changeMessageNewInFriend = createAsyncThunk(
@@ -56,7 +60,7 @@ export const setIsReadMessageIntoFriend = createAsyncThunk(
         access_token,
         id
       );
-      return { id:id, friendId:friendId };
+      return { id: id, friendId: friendId };
     } catch (error: any) {
       console.error(error);
       return thunkAPI.rejectWithValue(error.message);
@@ -72,7 +76,7 @@ const friendsSlice = createSlice({
     setFriends: (state, action) => {
       state.friends = action.payload;
     },
-    setMessages:(state, action) => {
+    setMessages: (state, action) => {
       const updatedFriends = state.friends.map((friend) => {
         if (
           (friend.userId1 === action.payload.friendId &&
@@ -86,7 +90,7 @@ const friendsSlice = createSlice({
         return friend;
       });
       state.friends = updatedFriends;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -102,14 +106,14 @@ const friendsSlice = createSlice({
           }
           return friend;
         });
-        state.friends = updatedFriends;
+        state.friends = sortByCreatedAt(updatedFriends);
       })
       .addCase(setIsReadMessageIntoFriend.fulfilled, (state, action) => {
         console.log("setIsReadMessageIntoFriend fulfilled");
         console.log(state.friends);
         const updatedFriends = state.friends.map((friend) => {
-          console.log("1: "+friend.id);
-          console.log("2: "+action.payload.id);
+          console.log("1: " + friend.id);
+          console.log("2: " + action.payload.id);
           if (friend.id === action.payload.id) {
             const messageUpdate = friend.message;
             if (messageUpdate) {
@@ -120,7 +124,7 @@ const friendsSlice = createSlice({
           }
           return friend;
         });
-        state.friends = updatedFriends;
+        state.friends = sortByCreatedAt(updatedFriends);
       })
       .addCase(setIsReadMessageIntoFriend.rejected, (action) => {
         console.log("setIsReadMessageIntoFriend rejected");
@@ -128,6 +132,23 @@ const friendsSlice = createSlice({
       });
   },
 });
-
+function sortByCreatedAt(friends: FriendEntity[]): FriendEntity[] {
+  return friends.sort((a, b) => {
+    if (a.message && b.message) {
+      const a_createdAt =
+        typeof a.message.createdAt === "string"
+          ? new Date(a.message.createdAt)
+          : a.message.createdAt;
+      const b_createdAt =
+        typeof b.message.createdAt === "string"
+          ? new Date(b.message.createdAt)
+          : b.message.createdAt;
+      if (b_createdAt && a_createdAt) {
+        return b_createdAt.getTime() - a_createdAt.getTime();
+      }
+    }
+    return 0;
+  });
+}
 export default friendsSlice.reducer;
 export const { setFriends } = friendsSlice.actions;

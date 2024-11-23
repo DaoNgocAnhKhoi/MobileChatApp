@@ -5,6 +5,8 @@ import { RootState } from "../configuration/redux";
 import { useTheme } from "react-native-paper";
 import { timeDifference } from "../utils/format";
 import { useEffect, useState } from "react";
+import Ionicons from "react-native-vector-icons/Ionicons";
+
 interface ItemMessageProps {
   message: MessageEntity;
   pathAvt: string;
@@ -71,15 +73,11 @@ export default function ItemMessage({
   useEffect(() => {
     if (message.senderId === user?.id) {
       setUseStatePosition("right");
-      console.log("right");
     } else {
       setUseStatePosition("left");
     }
   }, [useStatePosition]);
-  useEffect(()=>{
-    console.log("message....................");
-    console.log(message);
-  },[])
+
   return (
     <View>
       {isShowDay ? (
@@ -102,8 +100,9 @@ export default function ItemMessage({
       )}
       <View
         style={{
-          width: "100%",
+          width: "auto",
           height: "auto",
+          maxWidth: useStatePosition === "left" ? "60%" : "100%",
           display: "flex",
           flexDirection: "row",
           justifyContent:
@@ -111,6 +110,23 @@ export default function ItemMessage({
           marginTop: 20,
         }}
       >
+        {useStatePosition === "right" ? (
+          message.isRead ? (
+            <Ionicons
+              name="checkmark-done"
+              size={15}
+              style={{ textAlignVertical: "bottom" }}
+            />
+          ) : (
+            <Ionicons
+              name="checkmark"
+              size={15}
+              style={{ textAlignVertical: "bottom" }}
+            />
+          )
+        ) : (
+          ""
+        )}
         <Text
           style={{
             textAlign: useStatePosition === "right" ? "right" : "left",
@@ -118,6 +134,7 @@ export default function ItemMessage({
             marginLeft: useStatePosition === "left" ? 10 : 0,
             textAlignVertical: "center",
             width: "auto",
+            maxWidth: "100%",
             backgroundColor: "white",
             fontSize: 16,
             fontWeight: 400,
@@ -130,6 +147,23 @@ export default function ItemMessage({
         >
           {message.content}
         </Text>
+        {useStatePosition === "left" ? (
+          message.isRead ? (
+            <Ionicons
+              name="checkmark-done"
+              size={15}
+              style={{ textAlignVertical: "bottom" }}
+            />
+          ) : (
+            <Ionicons
+              name="checkmark"
+              size={15}
+              style={{ textAlignVertical: "bottom" }}
+            />
+          )
+        ) : (
+          ""
+        )}
       </View>
       <Text
         style={{

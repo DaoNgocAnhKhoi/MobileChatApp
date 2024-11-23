@@ -151,7 +151,7 @@ function TabNavigator() {
         name="Notifications"
         component={Notifications}
         options={{
-          tabBarLabel: "Updates",
+          tabBarLabel: "Notifications",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="bell" color={color} size={26} />
           ),

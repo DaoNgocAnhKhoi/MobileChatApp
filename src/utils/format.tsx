@@ -4,9 +4,7 @@ export const timeDifference = (updatedAt: Date): string => {
   const date = typeof updatedAt === "string" ? new Date(updatedAt) : updatedAt;
   // Kiểm tra nếu `date` là `undefined` hoặc không hợp lệ
   const now = new Date(); // Lấy thời gian hiện tại
-  console.log("AAAA");
-  console.log(now);
-  console.log(updatedAt);
+
   // Lấy thời gian chênh lệch giữa thời gian hiện tại và updatedAt (tính bằng milliseconds)
   const timeDiff = now.getTime() - date.getTime(); // getTime() trả về milliseconds
 
@@ -16,11 +14,6 @@ export const timeDifference = (updatedAt: Date): string => {
   const hours = Math.floor(minutes / 60); // Giờ
   const days = Math.floor(hours / 24); // Ngày
 
-  console.log("AAAA");
-  console.log(seconds);
-  console.log(minutes);
-  console.log(hours);
-  console.log(days);
 
   // Trả về kết quả dưới dạng chuỗi
   if (days > 0) {
