@@ -25,6 +25,26 @@ interface LogoutResponse {
 
 const accountApi = {
   // Define the function type with parameters and return type
+  async fetchCheckLogin(access_token: string){
+    try {
+      const response = await fetch(BASE_URL + "api/get-user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      // Kiểm tra nội dung phản hồi
+      const text = await response.text();
+      // Nếu phản hồi là JSON, parse nó
+      return JSON.parse(text);
+    } catch (error: any) {
+      throw new Error(`Error fetching check login: ${error.message}`);
+    }
+  },
   async fetchLogin(credentials: Credentials): Promise<LoginResponse> {
     try {
       const response = await fetch(BASE_URL + "api/login", {

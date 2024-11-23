@@ -35,7 +35,8 @@
     "redux": "^5.0.1",
     "sockjs-client": "^1.6.1",
     "text-encoding": "^0.7.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "expo-secure-store": "~13.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -155,6 +155,7 @@ export default function PasswordEdit({ handleBack }: any) {
             />
           </TouchableOpacity>
         </View>
+        
       </View>
       <View
         style={{
@@ -206,6 +207,13 @@ export default function PasswordEdit({ handleBack }: any) {
           </TouchableOpacity>
         </View>
       </View>
+      <View>
+          <Text style={{color:colors.error}}>
+            {passwordEdit.passwordConfirm != passwordEdit.passwordNew
+              ? "Password does not match"
+              : ""}
+          </Text>
+        </View>
       <View style={{ width: "100%", alignItems: "center" }}>
         <TouchableOpacity
           style={{

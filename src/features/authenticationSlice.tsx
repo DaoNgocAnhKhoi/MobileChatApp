@@ -163,6 +163,17 @@ export const logout = createAsyncThunk(
     }
   }
 );
+export const getUser = createAsyncThunk(
+  "account/get-user",
+  async (access_token: string, thunkAPI) => {
+    try {
+      const response = await accountApi.fetchCheckLogin(access_token);
+      return {user:response,access_token:access_token};
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
 // export const register = createAsyncThunk(
 //     "account/register",
@@ -251,6 +262,12 @@ const authenticationSlice = createSlice({
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.message = action?.payload ? action.payload : "";
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.message = "Login successful.";
+        state.access_token = action.payload.access_token;
+        state.user = action.payload.user;
       });
     // .addCase(register.pending, (state) => {
     //     state.message = "Registering...";

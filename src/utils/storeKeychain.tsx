@@ -1,14 +1,10 @@
-import * as Keychain from "react-native-keychain";
+import * as SecureStore from 'expo-secure-store';
 
 // Lưu token
 export const saveToken = async (token: string) => {
   try {
-    if (Keychain) {
-      // Kiểm tra xem Keychain có được khởi tạo không
-      await Keychain.setGenericPassword("token", token);
-    } else {
-      console.error("Keychain is not initialized correctly.");
-    }
+    await SecureStore.setItemAsync('access_token', token);
+    console.log("Token saved successfully");
   } catch (error) {
     console.error("Error saving token", error);
   }
@@ -17,11 +13,8 @@ export const saveToken = async (token: string) => {
 // Lấy token
 export const getToken = async () => {
   try {
-    const credentials = await Keychain.getGenericPassword();
-    if (credentials) {
-      return credentials.password; // Token được lưu dưới dạng mật khẩu
-    }
-    return null;
+    const token = await SecureStore.getItemAsync('access_token');
+    return token;
   } catch (error) {
     console.error("Error getting token", error);
   }
@@ -30,7 +23,8 @@ export const getToken = async () => {
 // Xóa token
 export const deleteToken = async () => {
   try {
-    await Keychain.resetGenericPassword();
+    await SecureStore.deleteItemAsync('access_token');
+    console.log("Token deleted successfully");
   } catch (error) {
     console.error("Error deleting token", error);
   }
