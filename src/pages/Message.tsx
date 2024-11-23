@@ -103,9 +103,6 @@ export function Message({ route }: any) {
         id,
       })
     );
-    messages.map((mes) => {
-      console.log(mes);
-    });
   }, [messages]);
   useEffect(() => {
     if (friendId && user && user.id) {

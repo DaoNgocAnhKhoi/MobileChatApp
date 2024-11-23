@@ -20,7 +20,7 @@ export const apiFriends = createApi({
   }),
   endpoints: (build) => ({
     getAllFriendsByUserId: build.query<FriendEntity[], string>({
-      query: (userId) => `find-all-friends-by-user-id?userId=${userId}`,
+      query: (userId) => `find-all-friends-by-user-id`,
       transformResponse: (response: FriendEntity[]) => {
         console.log(response)
         return response

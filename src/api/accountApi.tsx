@@ -7,8 +7,6 @@ interface Credentials {
   password: string;
 }
 
-
-
 interface LoginResponse {
   access_token: string;
   user: UserInformations;
@@ -27,6 +25,26 @@ interface LogoutResponse {
 
 const accountApi = {
   // Define the function type with parameters and return type
+  async fetchCheckLogin(access_token: string){
+    try {
+      const response = await fetch(BASE_URL + "api/get-user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      // Kiểm tra nội dung phản hồi
+      const text = await response.text();
+      // Nếu phản hồi là JSON, parse nó
+      return JSON.parse(text);
+    } catch (error: any) {
+      throw new Error(`Error fetching check login: ${error.message}`);
+    }
+  },
   async fetchLogin(credentials: Credentials): Promise<LoginResponse> {
     try {
       const response = await fetch(BASE_URL + "api/login", {
@@ -39,13 +57,12 @@ const accountApi = {
           password: credentials.password,
         }),
       });
-      // Kiểm tra nội dung phản hồi
-      const text = await response.text();
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+      // Kiểm tra nội dung phản hồi
+      const text = await response.text();
       // Nếu phản hồi là JSON, parse nó
       return JSON.parse(text);
     } catch (error: any) {
@@ -74,18 +91,59 @@ const accountApi = {
     }
   },
 
-  async fetchLogout(): Promise<LogoutResponse> {
+  async fetchLogout(access_token: string): Promise<string> {
     try {
-      const response = await fetch("http://localhost:8080/api/logout", {
-        method: "POST",
+      const response = await fetch(BASE_URL + "api/logout", {
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + access_token,
         },
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return await response.json();
+      return "logout success";
+    } catch (error: any) {
+      throw new Error(`Error fetching logout: ${error.message}`);
+    }
+  },
+  async fetchChangeUserInformations(
+    access_token: string,
+    user: UserInformations
+  ): Promise<UserInformations> {
+    try {
+      const response = await fetch(BASE_URL + "api/update-user-information", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+        body: JSON.stringify(user),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const text = await response.text();
+      return JSON.parse(text);
+    } catch (error: any) {
+      throw new Error(`Error fetching logout: ${error.message}`);
+    }
+  },
+  async fetchChangePassword(access_token: string,passwordCurrent:string, passwordNew:string): Promise<string> {
+    try {
+      const response = await fetch(BASE_URL + "api/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+        body: JSON.stringify({passwordCurrent, passwordNew})
+      });
+      console.log(response.ok)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return "Change Password Success!";
     } catch (error: any) {
       throw new Error(`Error fetching logout: ${error.message}`);
     }
