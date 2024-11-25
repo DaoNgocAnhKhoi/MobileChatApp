@@ -76,7 +76,7 @@ export default function Friends() {
       <FlatList
         style={{ flex: 1 }}
         data={data as UserInformations[]}
-        keyExtractor={(item) => new Date(item.updatedAt).getTime().toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={(item) => <ItemFriendOnline friend={item.item} />}
       />
     </View>

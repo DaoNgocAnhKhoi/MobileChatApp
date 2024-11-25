@@ -10,8 +10,8 @@ export interface UserInformations {
   email: string;
   gender: "male" | "female";
   birthDate: Date;
-  active: boolean;
-  updatedAt: string;
+  // active: boolean;
+  // updatedAt: string;
   // Add other fields based on your user information structure
 }
 

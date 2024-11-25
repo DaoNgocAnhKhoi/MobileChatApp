@@ -2,10 +2,12 @@ import { UserInformations } from "../features/authenticationSlice";
 import { BASE_URL } from "./base_url";
 
 // Define types for the function parameters and return values
-interface Credentials {
+export interface Credentials {
   username: string;
   password: string;
 }
+
+
 
 interface LoginResponse {
   access_token: string;
@@ -35,6 +37,7 @@ const accountApi = {
         },
       });
       if (!response.ok) {
+        // throw new Error(`HTTP error! status: ${response.status}`);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       // Kiểm tra nội dung phản hồi
@@ -59,7 +62,8 @@ const accountApi = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`); 
+        // throw new Error(`${response.message}`);
       }
       // Kiểm tra nội dung phản hồi
       const text = await response.text();
@@ -74,13 +78,14 @@ const accountApi = {
     credentials: Credentials,
     userInformations: UserInformations
   ): Promise<RegisterResponse> {
+    console.log("Request payload:", JSON.stringify({ account: credentials, user: userInformations }));
     try {
-      const response = await fetch(BASE_URL + "register", {
+      const response = await fetch(BASE_URL + "api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ credentials, userInformations }),
+        body: JSON.stringify({ account: credentials, user: userInformations }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
