@@ -84,6 +84,8 @@ export default function Register() {
         email: data.email,
         gender: data.gender,
         birthDate: data.birthDate,
+        active: true,
+        updatedAt: new Date().toISOString(),
       };
 
       const response = await accountApi.fetchRegister(
