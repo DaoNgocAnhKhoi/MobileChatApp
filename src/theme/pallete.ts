@@ -14,6 +14,7 @@ const GREY = {
   background: '#121212',    // Soft black for dark mode background
   surface: '#FAFAFA',       // Light surface for light mode
   darkSurface: '#1E1E1E',   // Darker surface for dark mode
+  inputText: '#555555',     // Color for input text
 };
 
 const palette = {
@@ -25,6 +26,7 @@ const palette = {
       background: PEACH.lighter,  // Light mode background
       surface: GREY.surface,      // Light mode surface color
       onSurface: GREY.lightText,  // Text color in light mode
+      text: GREY.lightText,       // Main text color
       button: {
         color: GREY.lightText,
         bgcolor: PEACH.main,
@@ -43,11 +45,14 @@ const palette = {
       background: GREY.background, // Dark mode background
       surface: GREY.darkSurface,   // Darker surface color for dark mode
       onSurface: GREY.darkText,    // Softened light text for readability
+      text: GREY.darkText,         // Main text color in dark mode
       button: {
         color: GREY.darkText,
         bgcolor: PEACH.dark,
         hvbgcolor: PEACH.darker,
       },
+      cardBackground: GREY.darkSurface, // Darker background for cards in dark mode
+      cardBorder: GREY.darkText,        // Border color for dark mode cards
     },
     mode: 'exact' as const,
   },

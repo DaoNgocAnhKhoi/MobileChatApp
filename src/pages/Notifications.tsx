@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Avatar, Button } from "react-native-paper";
 export default function Notifications() {
   return (
-    <View style={{ marginHorizontal: 10, marginVertical: 10 }}>
+    <View style={{ marginHorizontal: 10, marginVertical: 10, marginTop: 40 }}>
       <View
         style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >

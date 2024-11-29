@@ -18,9 +18,24 @@ import * as StompJs from "@stomp/stompjs";
 import { addMessage } from "../../features/messageSlice";
 import { changeMessageNewInFriend } from "../../features/friendsSlice";
 import { AppState } from "react-native";
-
+import { FriendEntity } from "../../features/friendsSlice";
+import {
+  addUserToList,
+  deleteUserFromList,
+} from "../../features/authenticationSlice";
+import {
+  addFriend,
+  deleteFriend,
+  addSentRequest,
+  deleteSentRequest,
+  addReceivedRequest,
+  deleteReceivedRequest,
+  addBlacklist,
+  deleteBlacklist
+} from "../../features/friendsSlice";
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
+import { fetchAllUsersExceptSelf } from "../../features/authenticationSlice";
 
 function TabNavigator() {
   const theme = useTheme();
@@ -29,9 +44,13 @@ function TabNavigator() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const dispatch = useDispatch();
+
   const { access_token, user } = useSelector(
     (state: RootState) => state.authentication
-  );
+  ) as {
+    access_token: string;
+    user: { id: string };
+  };
   const context = useContext(StompContext);
   // Kiểm tra context nếu nó không phải là undefined
   if (!context) {
@@ -39,8 +58,7 @@ function TabNavigator() {
   }
   const { stompClient, setStompClient } = context;
   const [appState, setAppState] = useState(AppState.currentState);
-  useEffect(() => {}, []);
-  // Khởi tạo kết nối WebSocket khi component được mount
+
   useEffect(() => {
     // Tạo kết nối SockJS
     const socket = () => new SockJS(BASE_URL + "ws"); // WebSocket factory
@@ -71,6 +89,66 @@ function TabNavigator() {
           Authorization: "Bearer " + access_token, // Gửi token nếu cần
         }
       );
+
+      stompClient.subscribe(
+        "/topic/friends/" + user.id, // Channel for user-specific friends' updates
+        (message) => {
+          const updatedFriend = JSON.parse(message.body);
+
+            const friend: FriendEntity = updatedFriend;
+            if (friend.status === "friend") {
+              if (friend.userId1 === user.id) {
+                dispatch(addFriend(friend));
+                dispatch(deleteSentRequest(friend.id));
+                dispatch(addBlacklist(friend.userId2));
+              } else {
+                dispatch(addFriend(friend));
+                dispatch(deleteReceivedRequest(friend.id));
+                dispatch(addBlacklist(friend.userId1));
+              }
+            } else if (friend.status === "pending") {
+              if (friend.userId1 === user.id) {
+                dispatch(addSentRequest(friend));
+                dispatch(addBlacklist(friend.userId2));
+              } else {
+                dispatch(addReceivedRequest(friend));
+                dispatch(addBlacklist(friend.userId1));
+              }
+            } else if (friend.status === "cancel") {
+              if (friend.userId1 === user.id) {
+                dispatch(deleteSentRequest(friend.id));
+                dispatch(deleteBlacklist(friend.userId2));
+              } else {
+                dispatch(deleteReceivedRequest(friend.id));
+                dispatch(deleteBlacklist(friend.userId1));
+              }
+            } else if (friend.status === "reject") {
+              if (friend.userId1 === user.id) {
+                dispatch(deleteReceivedRequest(friend.id));
+                dispatch(deleteBlacklist(friend.userId2));
+              } else {
+                dispatch(deleteSentRequest(friend.id));
+                dispatch(deleteBlacklist(friend.userId1));
+              }
+            } else if (friend.status === "delete") {
+              if (friend.userId1 === user.id) {
+                dispatch(deleteFriend(friend.userId2));
+                dispatch(deleteBlacklist(friend.userId2));
+              } else {
+                dispatch(deleteFriend(friend.userId1));
+                dispatch(deleteBlacklist(friend.userId1));
+              }
+            }
+            
+            else {
+              console.error("Unknown friend status: ", friend.status);
+            }
+          },
+          
+        {
+          Authorization: "Bearer " + access_token,
+        }
+      );
     };
 
     stompClient.onStompError = (error: any) => {
@@ -92,20 +170,20 @@ function TabNavigator() {
             Authorization: "Bearer " + access_token,
           },
         });
-        
+
         // stompClient.deactivate()
         // Thực hiện hành động khi app chuyển sang nền, ví dụ lưu trữ dữ liệu
       } else if (nextAppState === "inactive") {
         console.log("App is inactive");
         // Thực hiện hành động khi app không còn ở trạng thái active
-      }else if(nextAppState === "active"){
+      } else if (nextAppState === "active") {
         stompClient?.publish({
           destination: "/app/authentication",
           headers: {
             Authorization: "Bearer " + access_token,
           },
         });
-        
+
         // stompClient.activate();
       }
     });

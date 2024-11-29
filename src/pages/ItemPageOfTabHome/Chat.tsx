@@ -10,13 +10,15 @@ import Container from "../../components/Container";
 import { useTheme } from "react-native-paper";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../configuration/redux";
+import { RootState, AppDispatch } from "../../configuration/redux";
 import { useGetAllFriendsByUserIdQuery } from "../../apiSlice/apiFriends";
 import { useEffect } from "react";
 import { timeDifference } from "../../utils/format";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { FriendEntity, setFriends } from "../../features/friendsSlice";
+import { fetchAllUsersExceptSelf } from "../../features/authenticationSlice";
+import { fetchFriendRequests } from "../../features/friendsSlice";
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // {
@@ -48,7 +50,7 @@ interface Friend {
 // @CreatedDate
 // private LocalDateTime createdAt;
 export interface MessageEntity {
-  id:string;
+  id: string;
   senderId: string;
   receiverId: string;
   content: string;
@@ -63,27 +65,39 @@ export default function Chat() {
   const theme = useTheme();
   const { colors } = theme;
   const user = useSelector((state: RootState) => state.authentication.user);
-  const { data, isError, isFetching, isLoading, isSuccess, refetch } =
-    useGetAllFriendsByUserIdQuery( user? user?.id: "");
-    const { friends }: { friends: FriendEntity[] } = useSelector(
-      (state: RootState) => state.friends
-    );
-  const dispatch = useDispatch();
-  useEffect(() => {
-    refetch();
-  }, []);
-  
-  useEffect(() => {
-    dispatch(setFriends(data));
-  }, [data]);
+  const users = useSelector((state: RootState) => state.authentication.users);
+  const access_token = useSelector((state: RootState) => state.authentication.access_token);
+  const { friends }: { friends: FriendEntity[] } = useSelector(
+    (state: RootState) => state.friends
+  );
+  const dispatch: AppDispatch = useDispatch();
+
+
+useEffect(() => {
+  const fetchData = async () => {
+    // Chờ fetchAllUsersExceptSelf hoàn tất
+    await dispatch(fetchAllUsersExceptSelf({
+      access_token: access_token as string, 
+      userId: user?.id as string 
+    }));
+
+    // Sau khi fetchAllUsersExceptSelf hoàn thành, mới gọi fetchFriendRequests
+    dispatch(fetchFriendRequests({
+      access_token: access_token as string
+    }));
+  };
+
+  fetchData();
+}, []);
+
 
   return (
     <View style={{ flex: 1 }}>
       <FlatList
         style={{ flex: 1, width: "100%" }}
-        data={friends as Friend[]}
+        data={friends}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ItemListFriend friend={item} />}
+        renderItem={({ item }) => <ItemListFriend key={item.id} friend={item} />}
         ListHeaderComponent={
           <View>
             <View
@@ -124,8 +138,7 @@ function ItemListFriend({ friend }: { friend: Friend }) {
   const theme = useTheme();
   const { colors } = theme;
   const user = useSelector((state: RootState) => state.authentication.user);
-  console.log("friend");
-  console.log(friend);
+
   const handleMovePageMessage = (
     friendId: string,
     friendName: String,

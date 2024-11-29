@@ -153,6 +153,28 @@ const accountApi = {
       throw new Error(`Error fetching logout: ${error.message}`);
     }
   },
+
+  async fetchAllUser(access_token: string, userID: string): Promise<UserInformations[]> {
+    try {
+      const response = await fetch(`${BASE_URL}api/exclude-self?userId=${encodeURIComponent(userID)}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const users: UserInformations[] = await response.json(); // Đảm bảo API trả về mảng UserInformations[]
+      return users;
+    } catch (error: any) {
+      throw new Error(`Error fetching users: ${error.message}`);
+    }
+  }
+  
 };
 
 export default accountApi;

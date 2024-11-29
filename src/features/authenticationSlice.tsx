@@ -12,6 +12,7 @@ export interface UserInformations {
   birthDate: Date;
   active: boolean;
   updatedAt: string;
+  listFriendsId: string[];
   // Add other fields based on your user information structure
 }
 
@@ -189,7 +190,31 @@ export const getUser = createAsyncThunk(
 //             return thunkAPI.rejectWithValue(error.message);
 //         }
 //     }
-// );
+// );4
+
+
+interface FetchAllUsersExceptSelfArgs {
+  access_token: string;
+  userId: string;
+}
+
+export const fetchAllUsersExceptSelf = createAsyncThunk<
+  UserInformations[], // Kiểu dữ liệu trả về
+  FetchAllUsersExceptSelfArgs, // Tham số đầu vào
+  { rejectValue: string } // Lỗi khi thất bại
+>(
+  "users/fetchAllUsersExceptSelf",
+  async ({ access_token, userId }: FetchAllUsersExceptSelfArgs, thunkAPI) => {
+    try {
+      const users = await accountApi.fetchAllUser(access_token, userId); // Đảm bảo trả về UserInformations[]
+      return users;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+
 
 // Slice
 interface AuthenticationState {
@@ -197,6 +222,8 @@ interface AuthenticationState {
   message: string;
   access_token: string;
   user: UserInformations | null;
+  users: UserInformations[]; // Danh sách người dùng
+  fetchError: string; // Lỗi khi gọi API
 }
 
 const initialState: AuthenticationState = {
@@ -204,6 +231,8 @@ const initialState: AuthenticationState = {
   message: "",
   access_token: "",
   user: null,
+  users: [], // Danh sách người dùng
+  fetchError: "", // Lỗi khi gọi API
 };
 
 const authenticationSlice = createSlice({
@@ -213,6 +242,13 @@ const authenticationSlice = createSlice({
     authenticationLog(state) {
       console.log(current(state));
     },
+    deleteUserFromList(state, action) {
+      state.users = state.users.filter((user) => user.id !== action.payload);
+    },
+    addUserToList(state, action) {
+      state.users.push(action.payload);
+    }
+
   },
   extraReducers: (builder) => {
     builder
@@ -268,7 +304,18 @@ const authenticationSlice = createSlice({
         state.message = "Login successful.";
         state.access_token = action.payload.access_token;
         state.user = action.payload.user;
-      });
+      })
+      .addCase(fetchAllUsersExceptSelf.pending, (state) => {
+        state.message = "Fetching users...";
+      })
+      .addCase(fetchAllUsersExceptSelf.fulfilled, (state, action) => {
+        state.users = action.payload; // Lưu danh sách người dùng vào state
+        state.message = "Fetched users successfully.";
+        state.fetchError = "";
+      })
+      .addCase(fetchAllUsersExceptSelf.rejected, (state, action) => {
+        state.fetchError = action.payload || "Failed to fetch users.";
+      });   
     // .addCase(register.pending, (state) => {
     //     state.message = "Registering...";
     // })
@@ -290,5 +337,5 @@ const authenticationSlice = createSlice({
   },
 });
 
-export const { authenticationLog } = authenticationSlice.actions;
+export const { authenticationLog, deleteUserFromList, addUserToList } = authenticationSlice.actions;
 export default authenticationSlice.reducer;

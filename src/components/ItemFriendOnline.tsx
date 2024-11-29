@@ -1,109 +1,108 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import { FriendEntity } from "../features/friendsSlice";
+import { Avatar, Card, IconButton, useTheme } from "react-native-paper";
 import DotStatus from "./DotSatus";
-import { useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { RootState } from "../configuration/redux";
 import { timeDifference } from "../utils/format";
-import { useEffect } from "react";
 import { UserInformations } from "../features/authenticationSlice";
+import { removeFriend } from "../features/friendsSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../configuration/redux";
+import { deleteBlacklist } from "../features/friendsSlice";
 
 export function ItemFriendOnline({ friend }: { friend: UserInformations }) {
   const theme = useTheme();
   const user = useSelector((state: RootState) => state.authentication.user);
+  const access_token = useSelector((state: RootState) => state.authentication.access_token);
   const { colors } = theme;
-  console.log(friend)
-  console.log("mess: "+friend.updatedAt)
-  console.log("mess: " + friend.updatedAt);
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Function to handle deleting a friend
+  const handleDeleteFriend = () => {
+    console.log("Delete friend:", friend.firstName, friend.lastName);
+    dispatch(removeFriend({ access_token: access_token, friendId: friend.id }));
+  };
+
   return (
-    <View style={{ flex: 1, marginTop: 10 }}>
-      <View
-        style={{
-          height: 50, 
-          display: "flex",
-          flexDirection: "row",
-          marginTop: 10,
-        }}
-      >
-        <View>
-          <Image
-            style={[styles.iconAvt, { marginTop: 0 }]}
+    <Card style={styles.card}>
+      <View style={styles.cardContent}>
+        <View style={styles.avatarContainer}>
+          {/* Avatar */}
+          <Avatar.Image
+            size={50}
             source={require("../../images/app/pngtree-character-default-avatar-png-image_5407167.jpg")}
+            style={styles.avatar}
           />
-          <View style={{ position: "absolute", bottom: 4, right: 1 }}>
+          <View style={styles.statusDot}>
+            {/* Dot for online/offline status */}
             <DotStatus status={friend.active ? "online" : "offline"} />
           </View>
         </View>
-        <Text
-          style={[
-            styles.userName,
-            {
-              color: colors.onSurface,
-              fontWeight: 500,
-              textAlignVertical: "top",
-              marginLeft: 10,
-              height: 30,
-            },
-          ]}
-        >
-          {friend.firstName + " " + friend.lastName}
-        </Text>
-        {friend.active ? (
-          ""
-        ) : (
-          <Text style={[styles.time, { color: colors.onSurface }]}>
-            {timeDifference(
-              new Date(new Date(friend.updatedAt))
-            )}
+
+        {/* Name and Last Seen Time */}
+        <View style={styles.infoContainer}>
+          <Text style={[styles.userName, { color: colors.onSurface }]}>
+            {friend.firstName} {friend.lastName}
           </Text>
-        )}
+          {!friend.active && (
+            <Text style={[styles.time, { color: colors.onSurface }]}>
+              {timeDifference(new Date(friend.updatedAt))}
+            </Text>
+          )}
+        </View>
+
+        {/* Icon button for deleting friend */}
+        <IconButton
+          icon="delete"
+          size={30}
+          iconColor={colors.error} // Red color for delete action
+          onPress={handleDeleteFriend}
+          style={styles.deleteButton}
+        />
       </View>
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  time: {
-    position: "absolute",
-    right: 10,
-    top: 10,
+  card: {
+    marginBottom: 10,
+    marginHorizontal: 16,
+    borderRadius: 12,
+    elevation: 3,
   },
-  userName: {
-    color: "#FFFF",
-    fontSize: 20,
-    fontWeight: "bold",
-    marginLeft: 20,
-    height: 50,
-    textAlignVertical: "center",
-  },
-  addFriend: {
-    height: 68,
-    width: 68,
-    borderRadius: 34,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    bottom: 30,
-    right: 30,
-  },
-  containerSearch: {
-    height: 50,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    display: "flex",
+  cardContent: {
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
-  iconAvt: {
-    width: 50,
-    height: 50,
-    borderRadius: 35,
+  avatarContainer: {
+    position: "relative",
+  },
+  avatar: {
     borderWidth: 2,
-    marginLeft: 10,
-    marginTop: 20,
-    justifyContent: "center",
-    alignItems: "center",
+    borderColor: "#fff",
+  },
+  statusDot: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
+  },
+  infoContainer: {
+    marginLeft: 16,
+    flex: 1,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  time: {
+    fontSize: 12,
+    marginTop: 4,
+    fontStyle: "italic",
+  },
+  deleteButton: {
+    marginLeft: "auto",
   },
 });
