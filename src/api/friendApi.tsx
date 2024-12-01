@@ -196,7 +196,7 @@ const friendApi = {
   async removeFriend(friendId: string, access_token: string) {
     try {
       const response = await fetch(
-        BASE_URL + "api/friends/remove-friend?friendId=" + friendId,
+        BASE_URL + "api/friends/remove-friend?friendId=" + friendId, // friendId được truyền trong URL như query parameter
         {
           method: "POST",
           headers: {
@@ -205,6 +205,7 @@ const friendApi = {
           },
         }
       );
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

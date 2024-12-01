@@ -6,6 +6,7 @@ import { RootState } from "../configuration/redux";
 import { timeDifference } from "../utils/format";
 import { UserInformations } from "../features/authenticationSlice";
 import { removeFriend } from "../features/friendsSlice";
+import { deleteFriend } from "../features/friendsSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../configuration/redux";
 import { deleteBlacklist } from "../features/friendsSlice";
@@ -19,7 +20,6 @@ export function ItemFriendOnline({ friend }: { friend: UserInformations }) {
 
   // Function to handle deleting a friend
   const handleDeleteFriend = () => {
-    console.log("Delete friend:", friend.firstName, friend.lastName);
     dispatch(removeFriend({ access_token: access_token, friendId: friend.id }));
   };
 
